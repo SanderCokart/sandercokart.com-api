@@ -31,7 +31,7 @@ class ProcessContactForm implements ShouldQueue
 
     public function failed(Throwable $exception): void
     {
-        $this->job->delete();
+        $this->delete();
     }
 
 }
