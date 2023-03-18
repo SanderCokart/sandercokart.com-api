@@ -1,0 +1,103 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Api Documentation",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/contact": {
+            "post": {
+                "tags": [
+                    "Sander's CodeHouse"
+                ],
+                "description": "Send a message to the owner of the website",
+                "operationId": "8224d3792b5ce21c2815a7f8618366d9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "subject",
+                                    "message"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "username@domain.com"
+                                    },
+                                    "subject": {
+                                        "type": "string",
+                                        "example": "I have a question"
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Why are you so awesome?"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "We have received your message and would like to thank you for writing to us."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Too many requests. Please try again in 10 minutes."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hello-world": {
+            "get": {
+                "tags": [
+                    "Testing"
+                ],
+                "operationId": "8b9adf1f044979430e39ffd60e101b2c",
+                "responses": {
+                    "200": {
+                        "description": "If the request is successful the API works"
+                    }
+                }
+            }
+        }
+    }
+}

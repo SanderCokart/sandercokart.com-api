@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\ThrottleRequests;
+use App\Http\Middleware\UrlRoot;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -42,7 +44,6 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \Rakutentech\LaravelRequestDocs\LaravelRequestDocsMiddleware::class,
             \App\Http\Middleware\Localization::class,
         ],
     ];
@@ -63,7 +64,8 @@ class Kernel extends HttpKernel
         'guest'            => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed'           => \App\Http\Middleware\ValidateSignature::class,
-        'throttle'         => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'throttle'         => ThrottleRequests::class,
         'verified'         => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'url.root'         => UrlRoot::class,
     ];
 }
