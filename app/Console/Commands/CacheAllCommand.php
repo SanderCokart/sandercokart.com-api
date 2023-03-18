@@ -11,23 +11,29 @@ class CacheAllCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'cache:all';
+    protected $signature = 'cache:reset';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Cache all laravel assets';
+    protected $description = 'Recache all the things!';
 
     /**
      * Execute the console command.
      */
     public function handle(): void
     {
+        $this->call('optimize:clear');
         $this->call('cache:clear');
+        $this->call('config:clear');
+        $this->call('route:clear');
+        $this->call('view:clear');
+
         $this->call('config:cache');
         $this->call('route:cache');
         $this->call('view:cache');
+        $this->call('event:cache');
     }
 }
