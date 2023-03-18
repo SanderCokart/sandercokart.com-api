@@ -226,4 +226,15 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Custom
+    |--------------------------------------------------------------------------
+    |
+    | Custom configuration
+    |
+    */
+
+    'bypass_throttle' => env('APP_BYPASS_THROTTLE', false),
+
 ];

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ContactFormController;
+use App\Http\Controllers\HelloController;
+use App\Mail\ContactFormMail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -28,6 +30,6 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('/hello-world', \App\Http\Controllers\HelloController::class)->name('hello-world');
+Route::get('/hello-world', HelloController::class)->name('hello-world');
 
 Route::post('/contact', ContactFormController::class)->middleware('throttle:2,10,contact-form')->name('contact');

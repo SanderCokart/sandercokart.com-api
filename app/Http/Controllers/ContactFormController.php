@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ContactFormRequest;
-use App\Jobs\ProcessContactForm;
+use App\Mail\ContactFormMail;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Mail;
 
 class ContactFormController extends Controller
 {
@@ -36,7 +37,14 @@ class ContactFormController extends Controller
      */
     public function __invoke(ContactFormRequest $request): JsonResponse
     {
-        ProcessContactForm::dispatch(...$request->safe()->only(['name', 'email', 'message', 'subject']));
+        Mail::to('codehouse@sandercokart.com', 'Sander Cokart')
+            ->queue(new ContactFormMail(
+                    senderName: $request->safe()->name,
+                    senderEmail: $request->safe()->email,
+                    senderSubject: $request->safe()->subject,
+                    senderMessage: $request->safe()->message,
+                )
+            );
 
         return response()->json([
             'message' => __('responses.contact-form-response'),

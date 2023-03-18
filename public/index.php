@@ -5,6 +5,30 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+if (!function_exists('dd')) {
+    /**
+     * Dump the passed variables and end the script.
+     *
+     * @param mixed $args
+     * @return void
+     */
+    function dd(...$args)
+    {
+        $origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
+        header("Access-Control-Allow-Origin: $origin");
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Allow-Methods: *');
+        header('Access-Control-Allow-Headers: *');
+        http_response_code(500);
+
+        foreach ($args as $x) {
+            (new Symfony\Component\VarDumper\VarDumper)->dump($x);
+        }
+
+        die(1);
+    }
+}
+
 /*
 |--------------------------------------------------------------------------
 | Check If The Application Is Under Maintenance

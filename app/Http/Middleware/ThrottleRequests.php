@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Carbon\CarbonInterval;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Illuminate\Support\Facades\Artisan;
 
 class ThrottleRequests extends \Illuminate\Routing\Middleware\ThrottleRequests
 {
@@ -26,9 +27,12 @@ class ThrottleRequests extends \Illuminate\Routing\Middleware\ThrottleRequests
                 'parts' => 1,
             ]);
 
+        if (config('app.bypass_throttle')) {
+            Artisan::call('cache:clear');
+        }
+
         return is_callable($responseCallback)
             ? new HttpResponseException($responseCallback($request, $headers))
             : new ThrottleRequestsException(__('throttle.too-many-attempts', ['retry_after' => $retryAfter]), null, $headers);
     }
-
 }
