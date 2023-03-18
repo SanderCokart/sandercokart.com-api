@@ -57,7 +57,7 @@
 
 
     </style>
-    <title>Document</title>
+    <title>{{$senderEmail}} - {{$senderSubject}}</title>
 </head>
 <body>
 <header>
@@ -69,7 +69,7 @@
         <span><strong>Email:</strong> <a href="mailto:{{$senderEmail}}">{{$senderEmail}}</a></span>
     </div>
     <p><strong>Subject:</strong> {{$senderSubject}}</p>
-    <p><strong class="message">Message:</strong><br> {{$senderMessage}}</p>
+    <p class="message"><strong>Message:</strong><br/>{{$senderMessage}}</p>
 </main>
 </body>
 </html>
