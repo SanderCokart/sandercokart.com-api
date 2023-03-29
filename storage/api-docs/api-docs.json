@@ -9,13 +9,13 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/contact": {
+        "/api/v1/contact": {
             "post": {
                 "tags": [
                     "Sander's CodeHouse"
                 ],
                 "description": "Send a message to the owner of the website",
-                "operationId": "8224d3792b5ce21c2815a7f8618366d9",
+                "operationId": "fc2adbeac4ddf6f77b1c340344faf1c6",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -86,12 +86,12 @@
                 }
             }
         },
-        "/hello-world": {
+        "/api/v1/hello-world": {
             "get": {
                 "tags": [
                     "Testing"
                 ],
-                "operationId": "8b9adf1f044979430e39ffd60e101b2c",
+                "operationId": "f308ba3001a95c63c161107da42925b4",
                 "responses": {
                     "200": {
                         "description": "If the request is successful the API works"

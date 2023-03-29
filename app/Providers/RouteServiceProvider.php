@@ -24,20 +24,23 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->configureRateLimiting();
 
         $this->routes(function () {
-            Route::group(['middleware' => ['api']], function () {
+
+            Route::group(['middleware' => ['web'], 'as' => 'web.'], function () {
+                Route::group([
+                    'middleware' => ['auth:sanctum'],
+                ], base_path('routes/web.php'));
+            });
+
+            Route::group(['middleware' => ['api'], 'prefix' => 'api/v1', 'as' => 'api.'], function () {
                 //auth
                 Route::group([
                     'middleware' => ['auth:sanctum'],
                 ], base_path('routes/authenticated.php'));
-
-                Route::group([
-                    'middleware' => ['auth.session'],
-                ], base_path('routes/session.php'));
 
                 //guest
                 Route::group([
@@ -57,7 +60,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function configureRateLimiting()
+    protected function configureRateLimiting(): void
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());

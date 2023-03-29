@@ -11,7 +11,7 @@ class ContactFormController extends Controller
 {
     /**
      * @OA\Post(
-     *      path="/contact",
+     *      path="/api/v1/contact",
      *      tags={"Sander's CodeHouse"},
      *      description="Send a message to the owner of the website",
      *      @OA\RequestBody(

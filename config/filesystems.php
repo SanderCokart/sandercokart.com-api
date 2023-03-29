@@ -52,8 +52,6 @@ return [
             'throw'  => false,
         ],
 
-        ...include __DIR__ . '/_disks.php',
-
         Disk::s3->name => [
             'driver'                  => 's3',
             'key'                     => env('AWS_ACCESS_KEY_ID'),

@@ -10,7 +10,7 @@ class UrlGenerator extends DefaultUrlGenerator
 {
     public function getUrl(): string
     {
-        if ($this->media->disk === Disk::privateArticles->name) {
+        if ($this->media->disk === Disk::private->name) {
             return $this->getPrivateUrl();
         }
 
@@ -28,7 +28,7 @@ class UrlGenerator extends DefaultUrlGenerator
      */
     protected function getPrivateUrl(): string
     {
-        return URL::signedRoute('media.show', [
+        return URL::signedRoute('web.media.show', [
             'uuid' => $this->media->uuid,
             'disk' => sha1($this->media->disk),
         ]);

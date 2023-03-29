@@ -10,7 +10,7 @@ class HelloController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/hello-world",
+     *     path="/api/v1/hello-world",
      *     tags={"Testing"},
      *     @OA\Response(response="200", description="If the request is successful the API works")
      * )
@@ -21,7 +21,7 @@ class HelloController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         return response()->json([
-            'message' => Cache::rememberForever('hello-world', fn() => 'Hello World'),
+            'message' => 'Hello world!',
         ]);
     }
 }

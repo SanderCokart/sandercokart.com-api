@@ -15,6 +15,7 @@
         "guzzlehttp/guzzle": "^7",
         "laravel/framework": "^v10",
         "laravel/sanctum": "^3",
+        "laravel/scout": "^10.0",
         "laravel/tinker": "^2",
         "livewire/livewire": "^2.0",
         "spatie/ray": "^1.37"

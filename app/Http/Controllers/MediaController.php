@@ -48,10 +48,6 @@ class MediaController extends Controller
      */
     public function show(Request $request): ?Media
     {
-        if (! $request->hasValidSignature()) {
-            abort(404);
-        }
-
         /** @var Media|null $media */
         $media = Media::findByUuid($request->uuid);
         if (is_null($media)) {
