@@ -9,13 +9,14 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "livewire/livewire": "^2.0",
         "darkaonline/l5-swagger": "^8.5",
         "filament/filament": "^2.0",
+        "filament/spatie-laravel-media-library-plugin": "^2.0",
         "guzzlehttp/guzzle": "^7",
         "laravel/framework": "^v10",
         "laravel/sanctum": "^3",
         "laravel/tinker": "^2",
+        "livewire/livewire": "^2.0",
         "spatie/ray": "^1.37"
     },
     "require-dev": {

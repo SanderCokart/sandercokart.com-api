@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ContactFormController;
 use App\Http\Controllers\HelloController;
-use App\Mail\ContactFormMail;
+use App\Http\Controllers\MediaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {

@@ -98,6 +98,63 @@
                     }
                 }
             }
+        },
+        "/media?uuid={uuid}&disk={disk}&signature={signature}": {
+            "get": {
+                "tags": [
+                    "sandercokart.com"
+                ],
+                "description": "Retrieve media from private disk",
+                "operationId": "f57558a7cd8f8c218f46f6f2f9a83c54",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "Media UUID",
+                        "required": true
+                    },
+                    {
+                        "name": "disk",
+                        "in": "query",
+                        "description": "Disk name hash",
+                        "required": true
+                    },
+                    {
+                        "name": "signature",
+                        "in": "query",
+                        "description": "signature",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "*": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
         }
     }
 }

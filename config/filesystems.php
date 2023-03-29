@@ -52,13 +52,7 @@ return [
             'throw'  => false,
         ],
 
-        Disk::publishedArticles->name => [
-            'driver'     => 'local',
-            'root'       => storage_path('app/public/articles'),
-            'url'        => env('APP_URL') . '/storage/articles',
-            'visibility' => 'public',
-            'throw'      => false,
-        ],
+        ...include __DIR__ . '/_disks.php',
 
         Disk::s3->name => [
             'driver'                  => 's3',

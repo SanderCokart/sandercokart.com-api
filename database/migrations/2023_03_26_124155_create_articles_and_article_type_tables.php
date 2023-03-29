@@ -21,7 +21,6 @@ return new class extends Migration {
             $table->string('excerpt');
             $table->string('slug');
             $table->longText('body');
-            $table->string('banner');
             $table->softDeletes();
             $table->timestamps();
             $table->timestamp('published_at')->nullable();

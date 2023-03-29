@@ -3,9 +3,11 @@
 namespace App\Filament\Resources;
 
 use App\Enums\Disk;
+use App\Enums\MediaCollection;
 use App\Filament\Resources\ArticleResource\Pages;
 use App\Filament\Resources\ArticleResource\RelationManagers;
 use App\Models\Article;
+use Closure;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -45,14 +47,14 @@ class ArticleResource extends Resource
                             ->relationship('articleType', 'name')
                             ->required(),
                     ]),
-                Forms\Components\FileUpload::make('banner')
+                Forms\Components\SpatieMediaLibraryFileUpload::make('banner')
                     ->required()
                     ->image()
+                    ->collection(MediaCollection::ArticleBanners->name)
                     ->imageCropAspectRatio('3:2')
                     ->placeholder('Upload a banner...')
                     ->columnSpan(2)
-                    ->directory('banners')
-                    ->disk(Disk::publishedArticles->name)
+                    ->disk(fn(Closure $get) => $get('published_at') ? Disk::publishedArticles->name : Disk::privateArticles->name)
                     ->rules('required'),
                 Forms\Components\Toggle::make('published_at')
                     ->visibleOn('create')
