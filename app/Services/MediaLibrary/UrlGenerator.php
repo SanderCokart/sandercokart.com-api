@@ -2,7 +2,7 @@
 
 namespace App\Services\MediaLibrary;
 
-use App\Enums\Disk;
+use App\Enums\DiskEnum;
 use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator;
 use URL;
 
@@ -10,7 +10,7 @@ class UrlGenerator extends DefaultUrlGenerator
 {
     public function getUrl(): string
     {
-        if ($this->media->disk === Disk::private->name) {
+        if ($this->media->disk === DiskEnum::private->name) {
             return $this->getPrivateUrl();
         }
 

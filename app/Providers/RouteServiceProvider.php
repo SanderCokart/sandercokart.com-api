@@ -31,26 +31,21 @@ class RouteServiceProvider extends ServiceProvider
         $this->routes(function () {
 
             Route::group(['middleware' => ['web'], 'as' => 'web.'], function () {
-                Route::group([
-                    'middleware' => ['auth:sanctum'],
-                ], base_path('routes/web.php'));
+                Route::group(['middleware' => ['guest']], base_path('routes/web/guest.php'));
             });
 
             Route::group(['middleware' => ['api'], 'prefix' => 'api/v1', 'as' => 'api.'], function () {
-                //auth
                 Route::group([
                     'middleware' => ['auth:sanctum'],
-                ], base_path('routes/authenticated.php'));
+                ], base_path('routes/api/authenticated.php'));
 
-                //guest
                 Route::group([
                     'middleware' => ['guest'],
-                ], base_path('routes/guest.php'));
+                ], base_path('routes/api/guest.php'));
 
-                //verified
                 Route::group([
                     'middleware' => ['auth:sanctum', 'verified'],
-                ], base_path('routes/verified.php'));
+                ], base_path('routes/api/verified.php'));
             });
         });
     }

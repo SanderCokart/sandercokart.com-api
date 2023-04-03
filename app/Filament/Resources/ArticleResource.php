@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\Disk;
-use App\Enums\MediaCollection;
+use App\Enums\DiskEnum;
+use App\Enums\MediaCollectionEnum;
 use App\Filament\Resources\ArticleResource\Pages;
 use App\Models\Article;
 use Filament\Forms;
@@ -50,11 +50,11 @@ class ArticleResource extends Resource
                 Forms\Components\SpatieMediaLibraryFileUpload::make('banner')
                     ->required()
                     ->image()
-                    ->collection(MediaCollection::ArticleBanners->name)
+                    ->collection(MediaCollectionEnum::ArticleBanners->name)
                     ->imageCropAspectRatio('3:2')
                     ->placeholder('Upload a banner...')
                     ->columnSpan(2)
-                    ->disk(Disk::public->name)
+                    ->disk(DiskEnum::public->name)
                     ->rules('required'),
 
                 Forms\Components\Toggle::make('published_at')
@@ -89,7 +89,7 @@ class ArticleResource extends Resource
                 Forms\Components\MarkdownEditor::make('body')
                     ->placeholder('Enter a body...')
                     ->fileAttachmentsDirectory('markdown-attachments')
-                    ->fileAttachmentsDisk(Disk::public->name)
+                    ->fileAttachmentsDisk(DiskEnum::public->name)
                     ->required()
                     ->columnSpan(2)
                     ->rules('required'),
@@ -103,7 +103,7 @@ class ArticleResource extends Resource
                 Tables\Columns\TextColumn::make('title'),
                 Tables\Columns\TextColumn::make('slug')->toggleable()->toggledHiddenByDefault(),
                 Tables\Columns\TextColumn::make('articleType.name'),
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('banner')->collection(MediaCollection::ArticleBanners->name),
+                Tables\Columns\SpatieMediaLibraryImageColumn::make('banner')->collection(MediaCollectionEnum::ArticleBanners->name),
                 Tables\Columns\TextColumn::make('created_at')->toggleable()->toggledHiddenByDefault(),
                 Tables\Columns\TextColumn::make('updated_at')->toggleable()->toggledHiddenByDefault(),
                 Tables\Columns\TextColumn::make('published_at')->default('Draft'),

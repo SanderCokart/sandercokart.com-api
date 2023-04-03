@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\Disk;
+use App\Enums\DiskEnum;
 
 return [
 
@@ -32,27 +32,27 @@ return [
 
     'disks' => [
 
-        Disk::local->name => [
+        DiskEnum::local->name => [
             'driver' => 'local',
             'root'   => storage_path('app'),
             'throw'  => false,
         ],
 
-        Disk::private->name => [
+        DiskEnum::private->name => [
             'driver' => 'local',
             'root'   => storage_path('app/private'),
             'url'    => env('APP_URL') . '/storage',
             'throw'  => false,
         ],
 
-        Disk::public->name => [
+        DiskEnum::public->name => [
             'driver' => 'local',
             'root'   => storage_path('app/public'),
             'url'    => env('APP_URL') . '/storage',
             'throw'  => false,
         ],
 
-        Disk::s3->name => [
+        DiskEnum::s3->name => [
             'driver'                  => 's3',
             'key'                     => env('AWS_ACCESS_KEY_ID'),
             'secret'                  => env('AWS_SECRET_ACCESS_KEY'),

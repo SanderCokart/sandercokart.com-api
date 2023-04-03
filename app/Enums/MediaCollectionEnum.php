@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum MediaCollection
+enum MediaCollectionEnum
 {
     case ArticleBanners;
 }

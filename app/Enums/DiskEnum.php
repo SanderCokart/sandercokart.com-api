@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum Disk
+enum DiskEnum
 {
     case local;
     case public;

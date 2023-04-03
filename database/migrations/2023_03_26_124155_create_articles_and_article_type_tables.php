@@ -11,15 +11,15 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('article_types', function (Blueprint $table) {
-            $table->id();
+            $table->id()->index();
             $table->string('name');
         });
 
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->index()    ;
             $table->string('excerpt');
-            $table->string('slug');
+            $table->string('slug')->index();
             $table->longText('body');
             $table->softDeletes();
             $table->timestamps();

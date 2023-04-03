@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use App\Enums\Disk;
-use App\Enums\MediaCollection;
+use App\Enums\DiskEnum;
+use App\Enums\MediaCollectionEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Query\Builder;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -18,8 +19,11 @@ class Article extends Model implements HasMedia
 {
     use HasFactory, SoftDeletes, InteractsWithMedia, Searchable;
 
+    public static string $essentialBannerColumnsForWith = 'banner:id,model_type,model_id,disk,file_name';
     protected $casts = [
-        'published_at' => 'datetime',
+        'published_at' => 'datetime:Y-m-d H:i:s',
+        'created_at'   => 'datetime:Y-m-d H:i:s',
+        'updated_at'   => 'datetime:Y-m-d H:i:s',
     ];
 
     protected static function booted(): void
@@ -32,6 +36,7 @@ class Article extends Model implements HasMedia
     }
 
     //<editor-fold desc="scout">
+
     public function getScoutKey(): string
     {
         return $this->slug;
@@ -44,16 +49,24 @@ class Article extends Model implements HasMedia
     //</editor-fold>
 
     //<editor-fold desc="relationships">
-    public function articleType(): BelongsTo
+
+    public function type(): BelongsTo
     {
-        return $this->belongsTo(ArticleType::class);
+        return $this->belongsTo(ArticleType::class, 'article_type_id', 'id');
     }
+
+    public function banner(): MorphOne
+    {
+        return $this->media()->where('collection_name', MediaCollectionEnum::ArticleBanners->name)->one();
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="markdown manipulations">
+
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection(MediaCollection::ArticleBanners->name);
+        $this->addMediaCollection(MediaCollectionEnum::ArticleBanners->name);
     }
 
     public function extractFilesFromMarkdownBody(): array
@@ -73,11 +86,13 @@ class Article extends Model implements HasMedia
 
     public function deleteAllMarkdownAttachments(): void
     {
-        Storage::disk(Disk::public->name)->delete($this->extractFilesFromMarkdownBody());
+        Storage::disk(DiskEnum::public->name)->delete($this->extractFilesFromMarkdownBody());
     }
+
     //</editor-fold>
 
     //<editor-fold desc="scopes">
+
     public function scopePublished(Builder $query): Builder
     {
         return $query->whereNotNull('published_at');
@@ -87,5 +102,6 @@ class Article extends Model implements HasMedia
     {
         return $query->whereNull('published_at');
     }
+
     //</editor-fold>
 }
