@@ -66,7 +66,9 @@ class Article extends Model implements HasMedia
 
     public function courses(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class);
+        return $this->belongsToMany(Course::class)
+            ->withPivot('order_column')
+            ->using(ArticleCourse::class);
     }
     //</editor-fold>
 

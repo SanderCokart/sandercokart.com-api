@@ -17,8 +17,10 @@ return new class extends Migration {
         });
 
         Schema::create('article_course', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('article_id')->constrained();
             $table->foreignId('course_id')->constrained();
+            $table->integer('order_column')->nullable();
         });
     }
 

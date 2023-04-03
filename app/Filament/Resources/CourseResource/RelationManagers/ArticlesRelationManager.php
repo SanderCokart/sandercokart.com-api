@@ -95,10 +95,19 @@ class ArticlesRelationManager extends RelationManager
             ]);
     }
 
+    protected function getTableReorderColumn(): ?string
+    {
+        return 'order_column';
+    }
+
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id'),
+                Tables\Columns\TextColumn::make('article_id'),
+                Tables\Columns\TextColumn::make('course_id'),
+                Tables\Columns\TextColumn::make('order_column'),
                 Tables\Columns\TextColumn::make('title'),
             ])
             ->filters([

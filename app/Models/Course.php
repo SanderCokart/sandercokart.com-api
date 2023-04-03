@@ -14,6 +14,8 @@ class Course extends Model
 
     public function articles(): BelongsToMany
     {
-        return $this->belongsToMany(Article::class);
+        return $this->belongsToMany(Article::class)
+            ->withPivot('order_column')
+            ->using(ArticleCourse::class);
     }
 }
