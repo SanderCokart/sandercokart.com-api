@@ -74,7 +74,7 @@ class ArticleFactory extends Factory
             $article->addMedia(UploadedFile::fake()->image('banner.jpg', 300, 200))
                 ->toMediaCollection(
                     MediaCollectionEnum::ArticleBanners->name,
-                    DiskEnum::public->name
+                    DiskEnum::public()
                 );
         });
     }

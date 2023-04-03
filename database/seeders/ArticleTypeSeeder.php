@@ -10,8 +10,10 @@ class ArticleTypeSeeder extends Seeder
 {
     public function run(): void
     {
-        ArticleType::factory()->createMany(
-            array_map(fn(string $articleType) => ['name' => $articleType], ArticleTypeEnum::names()),
-        );
+        foreach (ArticleTypeEnum::names() as $name) {
+            ArticleType::insertOrIgnore([
+                'name' => $name,
+            ]);
+        }
     }
 }

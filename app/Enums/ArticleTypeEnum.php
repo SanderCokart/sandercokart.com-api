@@ -5,6 +5,11 @@ namespace App\Enums;
 use ArchTech\Enums\InvokableCases;
 use ArchTech\Enums\Names;
 
+/**
+ * @method static string general()
+ * @method static string courses()
+ * @method static string tips()
+ */
 enum ArticleTypeEnum: string
 {
     use InvokableCases, Names;
@@ -22,15 +27,6 @@ enum ArticleTypeEnum: string
         };
     }
 
-    public function getId(): int
-    {
-        return match ($this) {
-            self::general => 1,
-            self::courses => 2,
-            self::tips    => 3,
-        };
-    }
-
     public static function all(): array
     {
         return [
@@ -38,5 +34,14 @@ enum ArticleTypeEnum: string
             self::courses,
             self::tips,
         ];
+    }
+
+    public function getId(): int
+    {
+        return match ($this) {
+            self::general => 1,
+            self::courses => 2,
+            self::tips    => 3,
+        };
     }
 }

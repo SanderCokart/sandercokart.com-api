@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\ArticleTypeEnum;
 use App\Enums\DiskEnum;
 use App\Enums\MediaCollectionEnum;
 use App\Filament\Resources\ArticleResource\Pages;
@@ -43,19 +44,18 @@ class ArticleResource extends Resource
                             ->unique(ignoreRecord: true)
                             ->rules('required|max:255'),
                         Forms\Components\Select::make('article_type_id')
-                            ->relationship('articleType', 'name')
+                            ->relationship('type', 'name')
                             ->required(),
                     ]),
 
                 Forms\Components\SpatieMediaLibraryFileUpload::make('banner')
                     ->required()
                     ->image()
-                    ->collection(MediaCollectionEnum::ArticleBanners->name)
+                    ->collection(MediaCollectionEnum::ArticleBanners())
                     ->imageCropAspectRatio('3:2')
                     ->placeholder('Upload a banner...')
                     ->columnSpan(2)
-                    ->disk(DiskEnum::public->name)
-                    ->rules('required'),
+                    ->disk(DiskEnum::public()),
 
                 Forms\Components\Toggle::make('published_at')
                     ->visibleOn('create')
@@ -89,7 +89,7 @@ class ArticleResource extends Resource
                 Forms\Components\MarkdownEditor::make('body')
                     ->placeholder('Enter a body...')
                     ->fileAttachmentsDirectory('markdown-attachments')
-                    ->fileAttachmentsDisk(DiskEnum::public->name)
+                    ->fileAttachmentsDisk(DiskEnum::public())
                     ->required()
                     ->columnSpan(2)
                     ->rules('required'),
@@ -100,13 +100,13 @@ class ArticleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title'),
+                Tables\Columns\TextColumn::make('title')->searchable(),
                 Tables\Columns\TextColumn::make('slug')->toggleable()->toggledHiddenByDefault(),
-                Tables\Columns\TextColumn::make('articleType.name'),
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('banner')->collection(MediaCollectionEnum::ArticleBanners->name),
+                Tables\Columns\TextColumn::make('type.name')->formatStateUsing(fn($state) => Str::headline($state)),
+                Tables\Columns\SpatieMediaLibraryImageColumn::make('banners')->collection(MediaCollectionEnum::ArticleBanners())->label('Banner'),
                 Tables\Columns\TextColumn::make('created_at')->toggleable()->toggledHiddenByDefault(),
                 Tables\Columns\TextColumn::make('updated_at')->toggleable()->toggledHiddenByDefault(),
-                Tables\Columns\TextColumn::make('published_at')->default('Draft'),
+                Tables\Columns\TextColumn::make('published_at')->default('Draft')->sortable()->searchable(),
                 Tables\Columns\ToggleColumn::make('Published')
                     ->getStateUsing(fn(Article $record) => isset($record->published_at))
                     ->updateStateUsing(function ($state, Article $record) {
@@ -119,13 +119,21 @@ class ArticleResource extends Resource
                 //filter drafts and published
                 Tables\Filters\TernaryFilter::make('published_at')
                     ->placeholder('All')
+                    ->label('Show')
                     ->falseLabel('Drafts')
                     ->trueLabel('Published')
                     ->queries(
                         true: fn(Builder $query) => $query->whereNotNull('published_at'),
                         false: fn(Builder $query) => $query->whereNull('published_at'),
                     ),
+                Tables\Filters\SelectFilter::make('type')
+                    ->relationship('type', 'name')
+                    ->multiple()
+                    ->options((fn() => collect(ArticleTypeEnum::all())->mapWithKeys(fn(ArticleTypeEnum $articleType) => [$articleType->getId() => Str::headline($articleType())])->toArray()))
+                    ->placeholder('All')
+                    ->label('Type'),
             ])
+            ->defaultSort('published_at', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),

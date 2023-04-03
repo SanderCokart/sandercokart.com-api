@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('article_types', function (Blueprint $table) {
             $table->id()->index();
-            $table->string('name');
+            $table->string('name')->unique();
         });
 
         Schema::create('articles', function (Blueprint $table) {

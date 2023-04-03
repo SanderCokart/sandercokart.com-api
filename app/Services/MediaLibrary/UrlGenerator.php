@@ -10,7 +10,7 @@ class UrlGenerator extends DefaultUrlGenerator
 {
     public function getUrl(): string
     {
-        if ($this->media->disk === DiskEnum::private->name) {
+        if ($this->media->disk === DiskEnum::private()) {
             return $this->getPrivateUrl();
         }
 

@@ -35,8 +35,12 @@ class Article extends Model implements HasMedia
         });
     }
 
-    //<editor-fold desc="scout">
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection(MediaCollectionEnum::ArticleBanners());
+    }
 
+    //<editor-fold desc="scout">
     public function getScoutKey(): string
     {
         return $this->slug;
@@ -49,7 +53,6 @@ class Article extends Model implements HasMedia
     //</editor-fold>
 
     //<editor-fold desc="relationships">
-
     public function type(): BelongsTo
     {
         return $this->belongsTo(ArticleType::class, 'article_type_id', 'id');
@@ -57,18 +60,11 @@ class Article extends Model implements HasMedia
 
     public function banner(): MorphOne
     {
-        return $this->media()->where('collection_name', MediaCollectionEnum::ArticleBanners->name)->one();
+        return $this->media()->where('collection_name', MediaCollectionEnum::ArticleBanners())->one();
     }
-
     //</editor-fold>
 
     //<editor-fold desc="markdown manipulations">
-
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection(MediaCollectionEnum::ArticleBanners->name);
-    }
-
     public function extractFilesFromMarkdownBody(): array
     {
         $regex = '/\((https?:\/\/)?' . preg_quote(config('app.url'), '/') . '\/storage\/markdown-attachments\/.*\)/';
@@ -86,13 +82,11 @@ class Article extends Model implements HasMedia
 
     public function deleteAllMarkdownAttachments(): void
     {
-        Storage::disk(DiskEnum::public->name)->delete($this->extractFilesFromMarkdownBody());
+        Storage::disk(DiskEnum::public())->delete($this->extractFilesFromMarkdownBody());
     }
-
     //</editor-fold>
 
     //<editor-fold desc="scopes">
-
     public function scopePublished(Builder $query): Builder
     {
         return $query->whereNotNull('published_at');
@@ -102,6 +96,5 @@ class Article extends Model implements HasMedia
     {
         return $query->whereNull('published_at');
     }
-
     //</editor-fold>
 }
