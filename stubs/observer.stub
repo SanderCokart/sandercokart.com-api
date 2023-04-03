@@ -1,0 +1,71 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+
+class {{ class }}
+{
+
+    public function retrieved({{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+
+    public function creating({{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+
+    public function created({{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+
+    public function updating({{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+
+
+    public function updated({{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+
+    public function saving({{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+
+    public function saved({{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+
+    public function deleting({{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+
+
+    public function deleted({{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+
+    public function restoring({{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+
+    public function restored({{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+
+    public function forceDeleted({{ model }} ${{ modelVariable }}): void
+    {
+        //
+    }
+}
