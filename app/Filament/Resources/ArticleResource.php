@@ -43,9 +43,24 @@ class ArticleResource extends Resource
                             ->placeholder('Enter a slug...')
                             ->unique(ignoreRecord: true)
                             ->rules('required|max:255'),
-                        Forms\Components\Select::make('article_type_id')
+                        Forms\Components\Select::make('type')
                             ->relationship('type', 'name')
+                            ->options(ArticleTypeEnum::getAssocArray(fn($option) => Str::headline($option)))
                             ->required(),
+                        Forms\Components\Select::make('courses')
+                            ->relationship('courses', 'title')
+                            ->preload()
+                            ->multiple()
+                            ->createOptionForm([
+                                Forms\Components\TextInput::make('title')
+                                    ->autofocus()
+                                    ->required()
+                                    ->reactive()
+                                    ->placeholder('Learn Laravel | React | Vue | Tailwind')
+                                    ->rules('required|max:255'),
+                            ])
+                            ->searchable()
+                            ->nullable(),
                     ]),
 
                 Forms\Components\SpatieMediaLibraryFileUpload::make('banner')

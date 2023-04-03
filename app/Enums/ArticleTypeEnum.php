@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use ArchTech\Enums\From;
 use ArchTech\Enums\InvokableCases;
 use ArchTech\Enums\Names;
 
@@ -12,7 +13,7 @@ use ArchTech\Enums\Names;
  */
 enum ArticleTypeEnum: string
 {
-    use InvokableCases, Names;
+    use InvokableCases, Names, From;
 
     case general = 'general';
     case courses = 'courses';
@@ -29,11 +30,17 @@ enum ArticleTypeEnum: string
 
     public static function all(): array
     {
-        return [
-            self::general,
-            self::courses,
-            self::tips,
-        ];
+        return array_map(fn($name) => self::from($name), self::names());
+    }
+
+    public static function getAssocArray(?callable $callback): array
+    {
+        return collect(self::all())->mapWithKeys(fn(self $articleType) => [$articleType->getId() => self::formatString($callback, $articleType())])->toArray();
+    }
+
+    private static function formatString(?callable $callback, string $string): string
+    {
+        return $callback ? $callback($string) : $string;
     }
 
     public function getId(): int

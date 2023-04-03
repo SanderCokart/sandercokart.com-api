@@ -17,7 +17,7 @@ return new class extends Migration {
 
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->index()    ;
+            $table->string('title')->index();
             $table->string('excerpt');
             $table->string('slug')->index();
             $table->longText('body');

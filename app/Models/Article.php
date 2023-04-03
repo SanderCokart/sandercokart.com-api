@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
@@ -61,6 +62,11 @@ class Article extends Model implements HasMedia
     public function banner(): MorphOne
     {
         return $this->media()->where('collection_name', MediaCollectionEnum::ArticleBanners())->one();
+    }
+
+    public function courses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class);
     }
     //</editor-fold>
 
