@@ -200,6 +200,8 @@ return [
          * Package Service Providers...
          */
 
+        \JamesMills\LaravelTimezone\LaravelTimezoneServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -209,6 +211,11 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        \App\Providers\Macros\RequestMacroServiceProvider::class,
+        \App\Providers\Macros\QueryBuilderMacrosServiceProvider::class,
+        \App\Providers\Macros\CollectionMacroServiceProvider::class,
+        App\Providers\Macros\CarbonMacroServiceProvider::class,
+        App\Providers\Macros\FilamentMacroServiceProvider::class,
     ],
 
     /*
