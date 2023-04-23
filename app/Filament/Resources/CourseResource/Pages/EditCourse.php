@@ -16,4 +16,9 @@ class EditCourse extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function getRedirectUrl(): ?string
+    {
+        return self::getResource()::getUrl('index');
+    }
 }
