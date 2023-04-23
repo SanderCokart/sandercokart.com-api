@@ -32,4 +32,14 @@ trait Publishable
     {
         return $this->published_at === null;
     }
+
+    public function publish(): void
+    {
+        $this->update(['published_at' => now()]);
+    }
+
+    public function redact(): void
+    {
+        $this->update(['published_at' => null]);
+    }
 }
