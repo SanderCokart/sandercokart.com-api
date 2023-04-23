@@ -37,7 +37,8 @@ class Article extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection(MediaCollectionEnum::ArticleBanners());
+        $this->addMediaCollection(MediaCollectionEnum::ArticleBanners())
+            ->singleFile();
     }
 
     //<editor-fold desc="scout">
