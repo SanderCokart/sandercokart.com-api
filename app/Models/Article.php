@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Enums\DiskEnum;
 use App\Enums\MediaCollectionEnum;
-use Illuminate\Database\Eloquent\Builder;
+use App\Traits\Publishable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,13 +18,12 @@ use Storage;
 
 class Article extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia, Searchable;
+    use HasFactory, SoftDeletes, InteractsWithMedia, Searchable, Publishable;
 
     public static string $essentialBannerColumnsForWith = 'banner:id,model_type,model_id,disk,file_name';
     protected $casts = [
-        'published_at' => 'datetime:Y-m-d H:i:s',
-        'created_at'   => 'datetime:Y-m-d H:i:s',
-        'updated_at'   => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     protected static function booted(): void
@@ -94,15 +93,5 @@ class Article extends Model implements HasMedia
     }
     //</editor-fold>
 
-    //<editor-fold desc="scopes">
-    public function scopePublished(Builder $query): Builder
-    {
-        return $query->whereNotNull('published_at');
-    }
 
-    public function scopeDraft(Builder $query): Builder
-    {
-        return $query->whereNull('published_at');
-    }
-    //</editor-fold>
 }
