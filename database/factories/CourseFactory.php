@@ -14,7 +14,8 @@ class CourseFactory extends Factory
     {
         return [
             'title'        => $title = $this->faker->word(),
-            'slug'         => Str::slug($title),
+            //'slug'         => Str::slug($title), //auto generated
+            'description'  => $this->faker->paragraph(),
 
             //dates between now and 30 days ago
             'created_at'   => $created_at = now()->subDays(random_int(1, 30)),

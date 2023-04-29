@@ -6,6 +6,7 @@ use App\Enums\ArticleTypeEnum;
 use App\Enums\DiskEnum;
 use App\Enums\MediaCollectionEnum;
 use App\Filament\Resources\ArticleResource\Pages;
+use App\Forms\Components\MDXEditor;
 use App\Models\Article;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -14,6 +15,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Spatie\FilamentMarkdownEditor\MarkdownEditor;
 use Str;
 
 class ArticleResource extends Resource
@@ -26,88 +28,83 @@ class ArticleResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Card::make([
 
-                Forms\Components\Grid::make(3)
-                    ->schema([
-                        Forms\Components\TextInput::make('title')
-                            ->autofocus()
-                            ->required()
-                            ->reactive()
-                            ->placeholder('Enter a title...')
-                            ->afterStateUpdated(function ($set, $state) {
-                                $set('slug', Str::slug($state));
-                            })
-                            ->rules('required|max:255'),
-                        Forms\Components\TextInput::make('slug')
-                            ->required()
-                            ->placeholder('Enter a slug...')
-                            ->unique(ignoreRecord: true)
-                            ->rules('required|max:255'),
-                        Forms\Components\Select::make('type')
-                            ->relationship('type', 'name')
-                            ->options(ArticleTypeEnum::getAssocArray(fn($option) => Str::headline($option)))
-                            ->required(),
-                        Forms\Components\Select::make('courses')
-                            ->relationship('courses', 'title')
-                            ->preload()
-                            ->multiple()
-                            ->createOptionForm([
-                                Forms\Components\TextInput::make('title')
-                                    ->autofocus()
-                                    ->required()
-                                    ->reactive()
-                                    ->placeholder('Learn Laravel | React | Vue | Tailwind')
-                                    ->rules('required|max:255'),
-                            ])
-                            ->searchable()
-                            ->nullable(),
-                    ]),
+                    Forms\Components\TextInput::make('title')
+                        ->autofocus()
+                        ->required()
+                        ->reactive()
+                        ->placeholder('Enter a title...')
+                        ->rules('required|max:255'),
 
-                Forms\Components\SpatieMediaLibraryFileUpload::make('banner')
-                    ->required()
-                    ->image()
-                    ->collection(MediaCollectionEnum::ArticleBanners())
-                    ->imageCropAspectRatio('3:2')
-                    ->placeholder('Upload a banner...')
-                    ->columnSpan(2)
-                    ->disk(DiskEnum::public()),
+                    Forms\Components\Select::make('article_type_id')
+                        ->relationship('type', 'name')
+                        ->options(ArticleTypeEnum::getAssocArray(fn($option) => Str::headline($option)))
+                        ->reactive()
+                        ->required(),
 
-                Forms\Components\Toggle::make('published_at')
-                    ->visibleOn('create')
-                    ->dehydrateStateUsing(function ($state) {
-                        return $state ? now() : null;
-                    })
-                    ->label('Publish Immediately'),
+                    Forms\Components\Select::make('courses')
+                        ->relationship('courses', 'title')
+                        ->multiple()
+                        ->reactive()
+                        ->preload()
+                        ->hidden(fn($get) => (int)$get('article_type_id') !== ArticleTypeEnum::courses->getId())
+                        ->createOptionForm([
+                            Forms\Components\TextInput::make('title')
+                                ->autofocus()
+                                ->required()
+                                ->reactive()
+                                ->placeholder('Enter a title...')
+                                ->rules('required|max:255')
+                                ->placeholder('Learn Laravel | React | Vue | Tailwind'),
 
-                Forms\Components\Toggle::make('published_at')
-                    ->visibleOn('edit')
-                    ->label('Published')
-                    ->dehydrateStateUsing(function ($state, Article $record) {
-                        if (isset($record->published_at) !== $state) {
-                            if ($state) {
-                                return now();
-                            }
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('media')
+                                ->collection(MediaCollectionEnum::CourseBanners())
+                                ->label('Banner')
+                                ->imageCropAspectRatio('16:9')
+                                ->required()
+                                ->image(),
+                            Forms\Components\Toggle::make('published_at')
+                                ->dehydrateStateUsing(fn($state) => $state ? now() : null)
+                                ->label('Publish Now'),
 
-                            return null;
-                        }
-                        return $record->published_at;
-                    })
-                    ->reactive(),
+                        ])
+                        ->searchable()
+                        ->nullable(),
 
-                Forms\Components\Textarea::make('excerpt')
-                    ->placeholder('Enter an excerpt...')
-                    ->required()
-                    ->columnSpan(2)
-                    ->autosize()
-                    ->rules('required'),
+                ])->columns(3),
 
-                Forms\Components\MarkdownEditor::make('body')
-                    ->placeholder('Enter a body...')
-                    ->fileAttachmentsDirectory('markdown-attachments')
-                    ->fileAttachmentsDisk(DiskEnum::public())
-                    ->required()
-                    ->columnSpan(2)
-                    ->rules('required'),
+                Forms\Components\Card::make([
+                    Forms\Components\SpatieMediaLibraryFileUpload::make('media')
+                        ->label('Banner')
+                        ->collection(MediaCollectionEnum::ArticleBanners())
+                        ->imageCropAspectRatio('16:9')
+                        ->columnSpan(2)
+                        ->required()
+                        ->image(),
+
+                    Forms\Components\Textarea::make('excerpt')
+                        ->placeholder('Enter an excerpt...')
+                        ->required()
+                        ->columnSpan(2)
+                        ->autosize()
+                        ->rules('required'),
+
+                    MarkdownEditor::make('body')
+                        ->placeholder('Enter a body...')
+                        ->fileAttachmentsDirectory('markdown-attachments')
+                        ->fileAttachmentsDisk(DiskEnum::public())
+                        ->required()
+                        ->columnSpan(2)
+                        ->rules('required'),
+
+                    Forms\Components\Toggle::make('published_at')
+                        ->dehydrateStateUsing(fn($state) => $state ? now() : null)
+                        ->label(fn($context) => match ($context) {
+                            'edit'   => 'Published',
+                            'create' => 'Publish Now',
+                        }),
+                ]),
             ]);
     }
 
@@ -115,13 +112,38 @@ class ArticleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')->searchable(),
-                Tables\Columns\TextColumn::make('slug')->toggleable()->toggledHiddenByDefault(),
-                Tables\Columns\TextColumn::make('type.name')->formatStateUsing(fn($state) => Str::headline($state)),
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('banners')->collection(MediaCollectionEnum::ArticleBanners())->label('Banner'),
-                Tables\Columns\TextColumn::make('created_at')->toggleable()->toggledHiddenByDefault(),
-                Tables\Columns\TextColumn::make('updated_at')->toggleable()->toggledHiddenByDefault(),
-                Tables\Columns\TextColumn::make('published_at')->default('Draft')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('slug')
+                    ->searchable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault(),
+
+                Tables\Columns\TextColumn::make('type.name')
+                    ->formatStateUsing(fn($state) => Str::headline($state)),
+
+                Tables\Columns\SpatieMediaLibraryImageColumn::make('media')
+                    ->label('Banner')
+                    ->collection(MediaCollectionEnum::ArticleBanners()),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->toggleable()
+                    ->dateTimezone()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->toggleable()
+                    ->dateTimezone()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('published_at')
+                    ->dateTimezone()
+                    ->sortable()
+                    ->searchable(),
+
                 Tables\Columns\ToggleColumn::make('Published')
                     ->getStateUsing(fn(Article $record) => isset($record->published_at))
                     ->updateStateUsing(function ($state, Article $record) {

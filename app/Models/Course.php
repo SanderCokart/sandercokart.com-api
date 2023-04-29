@@ -11,10 +11,12 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Course extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, Publishable, SoftDeletes;
+    use HasFactory, InteractsWithMedia, Publishable, SoftDeletes, HasSlug;
 
     public function registerMediaCollections(): void
     {
@@ -36,5 +38,12 @@ class Course extends Model implements HasMedia
             ->where('collection_name', MediaCollectionEnum::CourseBanners())
             ->one();
     }
+
     //</editor-fold>
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('title')
+            ->saveSlugsTo('slug');
+    }
 }

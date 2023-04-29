@@ -1,0 +1,78 @@
+# {{product}} Review
+
+## Introduction
+
+The {{product}} is a wonderful piece of technology.
+But not all products are perfect. This review will cover the `pros` and `cons` of the {{product}}.
+
+## Table of Contents
+
+## Pros
+
+- It's cheap
+- It's easy to use
+- It's fast
+- It's reliable
+- It's well documented
+
+## Cons
+
+- It's not very customizable
+- It's not very powerful
+- It's not very secure
+- It's not very scalable
+
+## Specifications
+
+| Specification | Value     |
+|---------------|-----------|
+| brightness    | 400 nits  |
+| contrast      | 1000:1    |
+| resolution    | 1920x1080 |
+| refresh rate  | 60 Hz     |
+| response time | 5 ms      |
+| viewing angle | 178°      |
+| battery life  | 5 hours   |
+
+## Image
+
+![{{product}}](https://unsplash.it/800/600?image=1005)
+
+### Todos
+
+- [ ] Write more specs
+- [ ] Write more pros
+- [ ] Write more cons
+- [ ] Write more images
+
+### Source code snippets React
+
+```ts fileName=app.tsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+export const App = () => {
+  return <div>Hello World</div>;
+};
+
+ReactDOM.render(<App/>, document.getElementById('root'));
+```
+
+```html fileName=index.html
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>
+```
+
+## Conclusion
+
+The {{product}} is a great product. It's cheap, easy to use, fast, reliable, and well documented.

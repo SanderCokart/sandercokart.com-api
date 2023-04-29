@@ -20,7 +20,9 @@
         "laravel/tinker": "^2",
         "livewire/livewire": "^2.0",
         "spatie/eloquent-sortable": "^4.0",
+        "spatie/filament-markdown-editor": "^1.2",
         "spatie/laravel-query-builder": "^5.2",
+        "spatie/laravel-sluggable": "^3.4",
         "spatie/ray": "^1.37"
     },
     "require-dev": {

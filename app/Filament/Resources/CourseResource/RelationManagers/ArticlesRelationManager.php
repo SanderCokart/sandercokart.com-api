@@ -15,9 +15,9 @@ use Str;
 
 class ArticlesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'articles';
-
     protected static ?string $recordTitleAttribute = 'title';
+
+    protected static string $relationship = 'articles';
 
     public static function form(Form $form): Form
     {
@@ -47,11 +47,12 @@ class ArticlesRelationManager extends RelationManager
                             ->required(),
                     ]),
 
-                Forms\Components\SpatieMediaLibraryFileUpload::make('banner')
+                Forms\Components\SpatieMediaLibraryFileUpload::make('media')
                     ->required()
                     ->image()
+                    ->label('Banner')
                     ->collection(MediaCollectionEnum::ArticleBanners())
-                    ->imageCropAspectRatio('3:2')
+                    ->imageCropAspectRatio('16:9')
                     ->placeholder('Upload a banner...')
                     ->columnSpan(2)
                     ->disk(DiskEnum::public()),
@@ -95,27 +96,21 @@ class ArticlesRelationManager extends RelationManager
             ]);
     }
 
-    protected function getTableReorderColumn(): ?string
-    {
-        return 'order_column';
-    }
-
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id'),
-                Tables\Columns\TextColumn::make('article_id'),
-                Tables\Columns\TextColumn::make('course_id'),
-                Tables\Columns\TextColumn::make('order_column'),
+                Tables\Columns\TextColumn::make('order_column')->label('Order'),
                 Tables\Columns\TextColumn::make('title'),
-            ])
-            ->filters([
-                //
+                Tables\Columns\SpatieMediaLibraryImageColumn::make('media')
+                    ->label('Banner')
+                    ->collection(MediaCollectionEnum::ArticleBanners()),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-                Tables\Actions\AttachAction::make()->preloadRecordSelect(),
+                Tables\Actions\AttachAction::make()
+                    ->recordSelectOptionsQuery(fn($query) => $query->where('article_type_id', ArticleTypeEnum::courses->getId()))
+                    ->preloadRecordSelect(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -126,5 +121,10 @@ class ArticlesRelationManager extends RelationManager
                 Tables\Actions\DetachBulkAction::make(),
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
+    }
+
+    protected function getTableReorderColumn(): ?string
+    {
+        return 'order_column';
     }
 }

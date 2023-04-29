@@ -14,16 +14,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 use Storage;
 
 class Article extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia, Searchable, Publishable;
+    use HasFactory, SoftDeletes, InteractsWithMedia, Searchable, Publishable, HasSlug;
 
-    public static string $essentialBannerColumnsForWith = 'banner:id,model_type,model_id,disk,file_name';
+    public static string $essentialBannerAttributes = 'id,model_type,model_id,disk,file_name';
+    protected $touches = ['courses'];
     protected $casts = [
-        'created_at' => 'datetime:Y-m-d H:i:s',
-        'updated_at' => 'datetime:Y-m-d H:i:s',
+//        'created_at' => 'datetime:Y-m-d H:i:s',
+//        'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     protected static function booted(): void
@@ -92,7 +95,21 @@ class Article extends Model implements HasMedia
     {
         Storage::disk(DiskEnum::public())->delete($this->extractFilesFromMarkdownBody());
     }
+
     //</editor-fold>
 
+    public function getUrl(): string
+    {
+        return route('api.articles.show', [
+            'type'    => $this->type?->name,
+            'article' => $this->slug,
+        ]);
+    }
 
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('title')
+            ->saveSlugsTo('slug');
+    }
 }

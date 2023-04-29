@@ -7,8 +7,11 @@ if (! function_exists('origin')) {
 }
 
 if (! function_exists('random')) {
-    function random(...$args)
+    function random(...$args):string
     {
+        $args = collect($args)->flatten()->toArray();
+
         return $args[array_rand($args)];
+
     }
 }

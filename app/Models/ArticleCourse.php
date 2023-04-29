@@ -12,4 +12,9 @@ class ArticleCourse extends Pivot implements Sortable
 
     public $timestamps = false;
     protected $table = 'article_course';
+
+    public function getHighestOrderNumber(): int
+    {
+        return (int)$this->buildSortQuery()->where('course_id', $this->course_id)->max($this->determineOrderColumnName());
+    }
 }
