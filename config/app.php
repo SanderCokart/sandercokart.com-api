@@ -216,6 +216,7 @@ return [
         \App\Providers\Macros\CollectionMacroServiceProvider::class,
         App\Providers\Macros\CarbonMacroServiceProvider::class,
         App\Providers\Macros\FilamentMacroServiceProvider::class,
+        \App\Providers\Macros\StrMacroServiceProvider::class,
         App\Providers\FilamentThemeServiceProvider::class,
     ],
 

@@ -26,6 +26,7 @@ class ArticleJsonResource extends JsonResource
             'created_at'   => $this->whenHas('created_at'),
             'updated_at'   => $this->whenHas('updated_at'),
             'published_at' => $this->whenHas('published_at'),
+            'estimated_reading_time' => $this->whenAppended('estimated_reading_time'),
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\DiskEnum;
 use App\Enums\MediaCollectionEnum;
 use App\Traits\Publishable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,10 +25,7 @@ class Article extends Model implements HasMedia
 
     public static string $essentialBannerAttributes = 'id,model_type,model_id,disk,file_name';
     protected $touches = ['courses'];
-    protected $casts = [
-//        'created_at' => 'datetime:Y-m-d H:i:s',
-//        'updated_at' => 'datetime:Y-m-d H:i:s',
-    ];
+    protected $appends = ['estimated_reading_time'];
 
     protected static function booted(): void
     {
@@ -111,5 +109,15 @@ class Article extends Model implements HasMedia
         return SlugOptions::create()
             ->generateSlugsFrom('title')
             ->saveSlugsTo('slug');
+    }
+
+    public function estimatedReadingTime(): Attribute
+    {
+        return new Attribute(
+            get: function ($value, $attributes) {
+                $duration = \Str::readDuration($attributes['body']);
+                return  $duration . str('min')->plural($duration);
+            },
+        );
     }
 }

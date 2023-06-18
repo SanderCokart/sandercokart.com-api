@@ -16,7 +16,7 @@ class ArticleController extends Controller
         $articles = QueryBuilder::for(Article::class)
             ->whereArticleTypeId($type->getId())
             ->published()
-            ->allowedFields('body')
+            ->allowedFields(['body'])
             ->with(['banner', 'type'])
             ->allowedSorts('published_at', 'title')
             ->defaultSort('-published_at')

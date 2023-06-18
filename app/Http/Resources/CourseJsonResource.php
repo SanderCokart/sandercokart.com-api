@@ -16,6 +16,7 @@ class CourseJsonResource extends JsonResource
         return [
             'id'    => $this->id,
             'title' => $this->title,
+            'description'    => $this->whenHas('description'),
 
             'published_at'   => $this->whenHas('published_at'),
             'created_at'     => $this->whenHas('created_at'),
