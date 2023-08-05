@@ -22,5 +22,6 @@ Route::get('/articles/paths', [ArticleController::class, 'paths'])
 
 //<editor-fold desc="courses">
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
 
 //</editor-fold>

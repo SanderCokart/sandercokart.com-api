@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CourseJsonCollection;
+use App\Http\Resources\CourseJsonResource;
 use App\Models\Article;
 use App\Models\Course;
+use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CourseController extends Controller
@@ -24,7 +26,15 @@ class CourseController extends Controller
         return new CourseJsonCollection($courses);
     }
 
-    public function show($id)
+    public function show(Request $request, string $slug): CourseJsonResource
     {
+        return new CourseJsonResource(
+            Course::with([
+                'banner:' . Article::$essentialBannerAttributes,
+                'articles',
+            ])
+                ->when(! $request->hasValidRelativeSignature(), fn($query) => $query->published())
+                ->where('slug', $slug)->firstOrFail()
+        );
     }
 }
