@@ -15,6 +15,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 use Spatie\FilamentMarkdownEditor\MarkdownEditor;
 use Str;
 
@@ -180,6 +181,14 @@ class ArticleResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
                 Tables\Actions\ForceDeleteBulkAction::make(),
                 Tables\Actions\RestoreBulkAction::make(),
+                Tables\Actions\BulkAction::make('publish')
+                    ->label('Publish')
+                    ->icon('heroicon-o-check-circle')
+                    ->action(fn(Collection $records) => $records->each(fn(Article $record) => $record->publish())),
+                Tables\Actions\BulkAction::make('unpublish')
+                    ->label('Redact')
+                    ->icon('heroicon-o-x-circle')
+                    ->action(fn(Collection $records) => $records->each(fn(Article $record) => $record->redact())),
             ]);
     }
 
