@@ -98,7 +98,7 @@ class ArticleFactory extends Factory
 
     private function generateBody(string $product): string
     {
-        $body = file_get_contents(base_path('stubs/markdown.article.md.stub'));
+        $body = file_get_contents(base_path('stubs/markdown.article.mdx.stub'));
 
         $body = str_replace('{{product}}', $product, $body);
 

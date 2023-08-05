@@ -47,7 +47,7 @@ But not all products are perfect. This review will cover the `pros` and `cons` o
 
 ### Source code snippets React
 
-```ts fileName=app.tsx
+```ts
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -58,7 +58,7 @@ export const App = () => {
 ReactDOM.render(<App/>, document.getElementById('root'));
 ```
 
-```html fileName=index.html
+```html
 <!doctype html>
 <html lang="en">
 <head>
