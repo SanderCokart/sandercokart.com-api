@@ -18,6 +18,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Storage;
+use Str;
 
 class Article extends Model implements HasMedia
 {
@@ -115,7 +116,7 @@ class Article extends Model implements HasMedia
     {
         return new Attribute(
             get: function ($value, $attributes) {
-                $duration = \Str::readDuration($attributes['body']);
+                $duration = Str::readDuration($attributes['body']);
                 return  $duration . str('min')->plural($duration);
             },
         );
