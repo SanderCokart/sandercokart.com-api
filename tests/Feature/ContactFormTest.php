@@ -2,7 +2,7 @@
 
 use function Pest\Laravel\postJson;
 
-it('Contact form works',
+test('Contact form works',
     /**
      * @param $data array{
      *      submittedData: array{
@@ -17,7 +17,7 @@ it('Contact form works',
      * }
      */
     function (array $data) {
-        $response = postJson(route('contact'), $data['submittedData']);
+        $response = postJson(route('api.contact'), $data['submittedData']);
         expect($response->status())->toBe($data['expected']['status']);
     }
 )->with('ContactFormPestDataset');

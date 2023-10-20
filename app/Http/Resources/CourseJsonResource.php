@@ -14,18 +14,18 @@ class CourseJsonResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'    => $this->id,
-            'title' => $this->title,
-            'description'    => $this->whenHas('description'),
+            'id'          => $this->whenHas('id'),
+            'title'       => $this->whenHas('title'),
+            'description' => $this->whenHas('description'),
+            'slug'        => $this->whenHas('slug'),
 
             'published_at'   => $this->whenHas('published_at'),
             'created_at'     => $this->whenHas('created_at'),
             'updated_at'     => $this->whenHas('updated_at'),
             'articles_count' => $this->whenHas('articles_count'),
-            'slug'           => $this->whenHas('slug'),
 
-            'banner'   => $this->whenLoaded('banner'),
-            'articles' => ArticleJsonResource::collection($this->whenLoaded('articles')),
+            'banner'   => $this->whenLoaded('banner', fn() => $this->banner),
+            'articles' => ArticleJsonResource::collection($this->whenLoaded('articles', fn() => $this->articles)),
         ];
     }
 }

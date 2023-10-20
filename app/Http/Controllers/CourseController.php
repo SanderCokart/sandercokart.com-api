@@ -31,7 +31,7 @@ class CourseController extends Controller
         return new CourseJsonResource(
             Course::with([
                 'banner:' . Article::$essentialBannerAttributes,
-                'articles',
+                'articles' => fn($query) => $query->with(['banner:' . Article::$essentialBannerAttributes]),
             ])
                 ->when(! $request->hasValidRelativeSignature(), fn($query) => $query->published())
                 ->where('slug', $slug)->firstOrFail()

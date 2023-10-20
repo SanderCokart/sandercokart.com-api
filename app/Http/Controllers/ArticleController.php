@@ -16,11 +16,10 @@ class ArticleController extends Controller
         $articles = QueryBuilder::for(Article::class)
             ->whereArticleTypeId($type->getId())
             ->published()
-            ->allowedFields(['body'])
             ->with(['banner', 'type'])
+            ->allowedFields(['body', 'excerpt', 'published_at', 'slug', 'title'])
             ->allowedSorts('published_at', 'title')
             ->defaultSort('-published_at')
-            ->addSelect('id', 'title', 'excerpt', 'slug', 'published_at', 'article_type_id')
             ->queryablePagination();
 
         return new ArticleJsonCollection($articles);
@@ -41,10 +40,8 @@ class ArticleController extends Controller
     public function paths(): array
     {
         return Article::with('type')->get()->map(fn(Article $article) => [
-            'params' => [
                 'type' => $article->type?->name,
                 'slug' => $article->slug,
-            ],
         ]
         )->toArray();
     }
