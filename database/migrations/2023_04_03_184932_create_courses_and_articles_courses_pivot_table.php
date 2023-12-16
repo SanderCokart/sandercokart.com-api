@@ -13,12 +13,15 @@ return new class extends Migration {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('slug')->unique();
+            $table->softDeletes();
             $table->timestamps();
+            $table->timestamp('published_at')->nullable();
         });
 
         Schema::create('article_course', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('article_id')->constrained();
+            $table->foreignId('article_id')->constrained()->cascadeOnDelete();
             $table->foreignId('course_id')->constrained();
             $table->integer('order_column')->nullable();
         });
@@ -30,5 +33,6 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::dropIfExists('courses');
+        Schema::dropIfExists('article_course');
     }
 };
