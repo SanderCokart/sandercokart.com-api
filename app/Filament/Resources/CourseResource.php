@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\DiskEnum;
+use App\Enums\MediaCollectionEnum;
 use App\Filament\Resources\CourseResource\Pages;
 use App\Filament\Resources\CourseResource\RelationManagers\ArticlesRelationManager;
 use App\Models\Course;
@@ -25,6 +27,14 @@ class CourseResource extends Resource
                     ->required()
                     ->autofocus()
                     ->placeholder('Learn Laravel | React | Vue | Tailwind'),
+                Forms\Components\SpatieMediaLibraryFileUpload::make('banner')
+                    ->required()
+                    ->image()
+                    ->collection(MediaCollectionEnum::CourseBanners())
+                    ->imageCropAspectRatio('3:2')
+                    ->placeholder('Upload a banner...')
+                    ->columnSpan(2)
+                    ->disk(DiskEnum::public()),
             ]);
     }
 
@@ -52,9 +62,9 @@ class CourseResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListCourses::route('/'),
+            'index' => Pages\ListCourses::route('/'),
             'create' => Pages\CreateCourse::route('/create'),
-            'edit'   => Pages\EditCourse::route('/{record}/edit'),
+            'edit' => Pages\EditCourse::route('/{record}/edit'),
         ];
     }
 }
