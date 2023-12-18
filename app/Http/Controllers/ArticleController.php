@@ -26,11 +26,11 @@ class ArticleController extends Controller
             ->addSelect('id', 'title', 'excerpt', 'slug', 'published_at', 'article_type_id')
             ->when($type, fn(Builder $query) => $query->where('article_type_id', $type?->getId()))
             ->when($request->has('paginate'),
-                fn(Builder $query) => $query->paginate($perPage)->withQueryString(),
-                fn(Builder $query) => $query->when($request->has('cursorPaginate'),
+                fn(Builder $query) => $query->when($request->has('cursor'),
                     fn(Builder $query) => $query->cursorPaginate($perPage)->withQueryString(),
-                    fn(Builder $query) => $query->get()
-                )
+                    fn(Builder $query) => $query->paginate($perPage)->withQueryString()
+                ),
+                fn(Builder $query) => $query->get(),
             );
 
         return new ArticleJsonCollection($articles);

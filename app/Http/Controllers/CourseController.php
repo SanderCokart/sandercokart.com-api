@@ -21,11 +21,11 @@ class CourseController extends Controller
             ->defaultSort('-published_at')
             ->addSelect('id', 'title', 'slug', 'published_at')
             ->when($request->has('paginate'),
-                fn(Builder $query) => $query->paginate($perPage)->withQueryString(),
-                fn(Builder $query) => $query->when($request->has('cursorPaginate'),
+                fn(Builder $query) => $query->when($request->has('cursor'),
                     fn(Builder $query) => $query->cursorPaginate($perPage)->withQueryString(),
-                    fn(Builder $query) => $query->get()
-                )
+                    fn(Builder $query) => $query->paginate($perPage)->withQueryString()
+                ),
+                fn(Builder $query) => $query->get(),
             );
 
         return new CourseJsonCollection($courses);
