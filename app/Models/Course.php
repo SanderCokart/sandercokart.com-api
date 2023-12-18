@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\MediaCollectionEnum;
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -12,7 +13,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Course extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, SoftDeletes;
+    use HasFactory, InteractsWithMedia, SoftDeletes, Sluggable;
 
     protected $casts = [
         'published_at' => 'datetime:Y-m-d H:i:s',
@@ -43,4 +44,13 @@ class Course extends Model implements HasMedia
         return $query->whereNull('published_at');
     }
     //</editor-fold>
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'title',
+                'onUpdate' => true,
+            ],
+        ];
+    }
 }

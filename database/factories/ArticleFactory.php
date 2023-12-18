@@ -61,10 +61,10 @@ class ArticleFactory extends Factory
         });
     }
 
-    public function sequential(): self
+    public function roundRobinArticleTypes(): self
     {
         return $this->sequence(
-            ...array_map(fn($articleType) => ['article_type_id' => $articleType->getId()], ArticleTypeEnum::all())
+            ...array_map(fn(ArticleTypeEnum $articleType) => ['article_type_id' => $articleType->getId()], ArticleTypeEnum::all())
         );
     }
 
@@ -73,7 +73,7 @@ class ArticleFactory extends Factory
         return $this->afterCreating(function (Article $article) {
             $article->addMedia(UploadedFile::fake()->image('banner.jpg', 300, 200))
                 ->toMediaCollection(
-                    MediaCollectionEnum::ArticleBanners->name,
+                    MediaCollectionEnum::ArticleBanners(),
                     DiskEnum::public()
                 );
         });

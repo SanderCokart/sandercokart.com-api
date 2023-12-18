@@ -2,9 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Enums\DiskEnum;
+use App\Enums\MediaCollectionEnum;
 use App\Models\Course;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
+use Illuminate\Http\UploadedFile;
 
 class CourseFactory extends Factory
 {
@@ -19,4 +21,18 @@ class CourseFactory extends Factory
             'published_at' => $this->faker->dateTimeBetween($updated_at, 'now'),
         ];
     }
+
+    public function configure(): self
+    {
+        return $this->afterCreating(function (Course $course) {
+            $course->addMedia(UploadedFile::fake()->image('thumbnail.jpg', 300, 200))
+                ->toMediaCollection(
+                    MediaCollectionEnum::CourseBanners(),
+                    DiskEnum::public()
+                );
+
+        });
+    }
+
+
 }

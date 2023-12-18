@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\DiskEnum;
 use App\Enums\MediaCollectionEnum;
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,7 @@ use Storage;
 
 class Article extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia, Searchable;
+    use HasFactory, SoftDeletes, InteractsWithMedia, Searchable, Sluggable;
 
     public static string $essentialBannerColumnsForWith = 'banner:id,model_type,model_id,disk,file_name';
     protected $casts = [
@@ -105,4 +106,14 @@ class Article extends Model implements HasMedia
         return $query->whereNull('published_at');
     }
     //</editor-fold>
+
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'title',
+                'onUpdate' => true,
+            ],
+        ];
+    }
 }

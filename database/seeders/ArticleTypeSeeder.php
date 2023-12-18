@@ -10,9 +10,10 @@ class ArticleTypeSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach (ArticleTypeEnum::names() as $name) {
+        foreach (ArticleTypeEnum::all() as $articleTypeEnum) {
             ArticleType::insertOrIgnore([
-                'name' => $name,
+                'id' => $articleTypeEnum->getId(),
+                'name' => $articleTypeEnum->name,
             ]);
         }
     }

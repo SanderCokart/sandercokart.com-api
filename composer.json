@@ -10,6 +10,7 @@
     "require": {
         "php": "^8.2",
         "archtechx/enums": "^0.3.2",
+        "cviebrock/eloquent-sluggable": "^10.0",
         "filament/filament": "^2.0",
         "filament/spatie-laravel-media-library-plugin": "^2.0",
         "guzzlehttp/guzzle": "^7",
