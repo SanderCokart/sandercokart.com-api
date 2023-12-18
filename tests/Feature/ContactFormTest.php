@@ -17,7 +17,7 @@ it('Contact form works',
      * }
      */
     function (array $data) {
-        $response = postJson(route('contact'), $data['submittedData']);
+        $response = postJson(route('api.contact'), $data['submittedData']);
         expect($response->status())->toBe($data['expected']['status']);
     }
 )->with('ContactFormPestDataset');
