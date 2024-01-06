@@ -11,8 +11,6 @@ class CourseJsonResource extends JsonResource
 {
 
     public static $wrap = 'article';
-    //date format: 25th of april 2021 8:00 AM
-    public static string $dateFormat = 'jS \of F Y \a\t g:i A';
 
     /**
      * Transform the resource into an array.
@@ -26,9 +24,9 @@ class CourseJsonResource extends JsonResource
             'title'        => $this->title,
             'slug'         => $this->slug,
             'banner'       => $this->whenLoaded('banner', fn() => $this->banner),
-            'created_at'   => $this->created_at?->format(self::$dateFormat),
-            'updated_at'   => $this->updated_at?->format(self::$dateFormat),
-            'published_at' => $this->published_at->format(self::$dateFormat),
+            'created_at'   => $this->created_at,
+            'updated_at'   => $this->updated_at,
+            'published_at' => $this->published_at,
         ];
     }
 }

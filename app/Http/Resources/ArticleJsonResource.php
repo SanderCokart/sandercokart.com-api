@@ -11,8 +11,6 @@ class ArticleJsonResource extends JsonResource
 {
 
     public static $wrap = 'article';
-    //date format: 25th of april 2021 8:00 AM
-    public static string $dateFormat = 'jS \of F Y \a\t g:i A';
 
     /**
      * Transform the resource into an array.
