@@ -43,7 +43,19 @@ class CourseResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
+                Tables\Columns\TextColumn::make('slug')->toggleable()->toggledHiddenByDefault(),
+                Tables\Columns\SpatieMediaLibraryImageColumn::make('banners')->collection(MediaCollectionEnum::CourseBanners())->label('Banner'),
+                Tables\Columns\TextColumn::make('created_at')->toggleable()->toggledHiddenByDefault(),
+                Tables\Columns\TextColumn::make('updated_at')->toggleable()->toggledHiddenByDefault(),
+                Tables\Columns\TextColumn::make('published_at')
+                    ->tooltip(fn($record) => $record->published_at)
+                    ->formatStateUsing(fn($state) => $state->diffForHumans())
+                    ->default('Draft')->sortable()->searchable()
+                    ->sortable()
+                    ->searchable(),
+
             ])
+            ->defaultSort('published_at', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

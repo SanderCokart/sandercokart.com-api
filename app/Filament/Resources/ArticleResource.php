@@ -121,7 +121,12 @@ class ArticleResource extends Resource
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('banners')->collection(MediaCollectionEnum::ArticleBanners())->label('Banner'),
                 Tables\Columns\TextColumn::make('created_at')->toggleable()->toggledHiddenByDefault(),
                 Tables\Columns\TextColumn::make('updated_at')->toggleable()->toggledHiddenByDefault(),
-                Tables\Columns\TextColumn::make('published_at')->default('Draft')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('published_at')
+                    ->tooltip(fn($record) => $record->published_at)
+                    ->formatStateUsing(fn($state) => $state->diffForHumans())
+                    ->default('Draft')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\ToggleColumn::make('Published')
                     ->getStateUsing(fn(Article $record) => isset($record->published_at))
                     ->updateStateUsing(function ($state, Article $record) {
@@ -164,9 +169,9 @@ class ArticleResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListArticles::route('/'),
+            'index' => Pages\ListArticles::route('/'),
             'create' => Pages\CreateArticle::route('/create'),
-            'edit'   => Pages\EditArticle::route('/{record}/edit'),
+            'edit' => Pages\EditArticle::route('/{record}/edit'),
         ];
     }
 
