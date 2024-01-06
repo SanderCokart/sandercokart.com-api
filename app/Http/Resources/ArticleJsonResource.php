@@ -29,9 +29,9 @@ class ArticleJsonResource extends JsonResource
             'banner'       => $this->whenLoaded('banner', fn() => $this->banner),
             'type'         => $this->whenLoaded('type', fn() => $this->type),
             'body'         => $this->when($this->body, $this->body),
-            'created_at'   => $this->created_at?->format(self::$dateFormat),
-            'updated_at'   => $this->updated_at?->format(self::$dateFormat),
-            'published_at' => $this->published_at->format(self::$dateFormat),
+            'created_at'   => $this->created_at,
+            'updated_at'   => $this->updated_at,
+            'published_at' => $this->published_at,
         ];
     }
 }

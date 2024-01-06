@@ -13,16 +13,21 @@ class ArticleJsonCollection extends ResourceCollection
     /**
      * Transform the resource collection into an array.
      *
-     * @param Request $request
+     * @param  Request  $request
      *
      * @return Collection
      */
     public function toArray(Request $request): Collection
     {
-
         return $this->collection
-            ->groupBy('type.name')
-            ->when($request->has('take'),
+            // Group by type name if no type is specified
+            ->when(
+                !$request->route('type'),
+                fn($query) => $query->groupBy('type.name')
+            )
+            // limit the number of articles per type if requested
+            ->when(
+                $request->has('take'),
                 fn($query) => $query->map(fn($group) => $group->take($request->get('take')))
             );
     }
