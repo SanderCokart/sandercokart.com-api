@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\WithEnum;
 use App\Http\Resources\CourseJsonCollection;
 use App\Models\Course;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,7 +17,7 @@ class CourseController extends Controller
 
         $courses = QueryBuilder::for(Course::class)
             ->allowedFields('body')
-            ->with(['banner', 'type'])
+            ->with([WithEnum::banner()])
             ->allowedSorts('published_at', 'title')
             ->defaultSort('-published_at')
             ->addSelect('id', 'title', 'slug', 'published_at')
