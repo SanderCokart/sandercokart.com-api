@@ -20,7 +20,7 @@ class CourseController extends Controller
             ->with([WithEnum::banner()])
             ->allowedSorts('published_at', 'title')
             ->defaultSort('-published_at')
-            ->addSelect('id', 'title', 'slug', 'published_at')
+            ->addSelect('id', 'title', 'slug', 'published_at', 'created_at', 'updated_at')
             ->when($request->has('paginate'),
                 fn(Builder $query) => $query->when($request->has('cursor'),
                     fn(Builder $query) => $query->cursorPaginate($perPage)->withQueryString(),
