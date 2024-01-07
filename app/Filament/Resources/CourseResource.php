@@ -43,16 +43,29 @@ class CourseResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
-                Tables\Columns\TextColumn::make('slug')->toggleable()->toggledHiddenByDefault(),
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('banners')->collection(MediaCollectionEnum::CourseBanners())->label('Banner'),
-                Tables\Columns\TextColumn::make('created_at')->toggleable()->toggledHiddenByDefault(),
-                Tables\Columns\TextColumn::make('updated_at')->toggleable()->toggledHiddenByDefault(),
-                Tables\Columns\TextColumn::make('published_at')
-                    ->tooltip(fn($record) => $record->published_at)
-                    ->formatStateUsing(fn($state) => $state->diffForHumans())
-                    ->default('Draft')->sortable()->searchable()
+                Tables\Columns\TextColumn::make('slug')
+                    ->toggleable()
+                    ->toggledHiddenByDefault(),
+                Tables\Columns\SpatieMediaLibraryImageColumn::make('banners')
+                    ->collection(MediaCollectionEnum::CourseBanners())
+                    ->label('Banner'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->toggleable()
+                    ->since()
+                    ->tooltip(fn($record) => $record->created_at)
                     ->sortable()
-                    ->searchable(),
+                    ->toggledHiddenByDefault(),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->toggleable()
+                    ->since()
+                    ->tooltip(fn($record) => $record->updated_at)
+                    ->sortable()
+                    ->toggledHiddenByDefault(),
+                Tables\Columns\TextColumn::make('published_at')
+                    ->placeholder('Draft')
+                    ->searchable()
+                    ->sortable()
+                    ->tooltip(fn($record) => $record->published_at)
 
             ])
             ->defaultSort('published_at', 'desc')
@@ -74,9 +87,9 @@ class CourseResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCourses::route('/'),
+            'index'  => Pages\ListCourses::route('/'),
             'create' => Pages\CreateCourse::route('/create'),
-            'edit' => Pages\EditCourse::route('/{record}/edit'),
+            'edit'   => Pages\EditCourse::route('/{record}/edit'),
         ];
     }
 }

@@ -7,6 +7,7 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -15,15 +16,15 @@ class Course extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia, SoftDeletes, Sluggable;
 
-    protected $casts = [
-        'published_at' => 'datetime:Y-m-d H:i:s',
-        'created_at' => 'datetime:Y-m-d H:i:s',
-        'updated_at' => 'datetime:Y-m-d H:i:s',
-    ];
-
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection(MediaCollectionEnum::CourseBanners());
+    }
+
+    //<editor-fold desc="relationships">
+    public function banner(): MorphOne
+    {
+        return $this->media()->where('collection_name', MediaCollectionEnum::CourseBanners())->one();
     }
 
     public function articles(): BelongsToMany
@@ -32,6 +33,7 @@ class Course extends Model implements HasMedia
             ->withPivot('order_column')
             ->using(ArticleCourse::class);
     }
+    //</editor-fold>
 
     //<editor-fold desc="scopes">
     public function scopePublished($query)
@@ -43,12 +45,13 @@ class Course extends Model implements HasMedia
     {
         return $query->whereNull('published_at');
     }
+
     //</editor-fold>
     public function sluggable(): array
     {
         return [
             'slug' => [
-                'source' => 'title',
+                'source'   => 'title',
                 'onUpdate' => true,
             ],
         ];

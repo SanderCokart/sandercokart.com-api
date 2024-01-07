@@ -21,13 +21,6 @@ class Article extends Model implements HasMedia
 {
     use HasFactory, SoftDeletes, InteractsWithMedia, Searchable, Sluggable;
 
-    public static string $essentialBannerColumnsForWith = 'banner:id,model_type,model_id,disk,file_name';
-    protected $casts = [
-        'published_at' => 'datetime:Y-m-d H:i:s',
-        'created_at'   => 'datetime:Y-m-d H:i:s',
-        'updated_at'   => 'datetime:Y-m-d H:i:s',
-    ];
-
     protected static function booted(): void
     {
         parent::booted();
@@ -62,7 +55,9 @@ class Article extends Model implements HasMedia
 
     public function banner(): MorphOne
     {
-        return $this->media()->where('collection_name', MediaCollectionEnum::ArticleBanners())->one();
+        return $this->media()
+            ->where('collection_name', MediaCollectionEnum::ArticleBanners())
+            ->one();
     }
 
     public function courses(): BelongsToMany
@@ -76,7 +71,7 @@ class Article extends Model implements HasMedia
     //<editor-fold desc="markdown manipulations">
     public function extractFilesFromMarkdownBody(): array
     {
-        $regex = '/\((https?:\/\/)?' . preg_quote(config('app.url'), '/') . '\/storage\/markdown-attachments\/.*\)/';
+        $regex = '/\((https?:\/\/)?'.preg_quote(config('app.url'), '/').'\/storage\/markdown-attachments\/.*\)/';
 
         preg_match($regex, $this->body, $matches);
 
@@ -91,7 +86,8 @@ class Article extends Model implements HasMedia
 
     public function deleteAllMarkdownAttachments(): void
     {
-        Storage::disk(DiskEnum::public())->delete($this->extractFilesFromMarkdownBody());
+        Storage::disk(DiskEnum::public())
+            ->delete($this->extractFilesFromMarkdownBody());
     }
     //</editor-fold>
 
@@ -105,13 +101,14 @@ class Article extends Model implements HasMedia
     {
         return $query->whereNull('published_at');
     }
+
     //</editor-fold>
 
     public function sluggable(): array
     {
         return [
             'slug' => [
-                'source' => 'title',
+                'source'   => 'title',
                 'onUpdate' => true,
             ],
         ];

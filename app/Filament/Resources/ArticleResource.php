@@ -115,16 +115,34 @@ class ArticleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')->searchable(),
-                Tables\Columns\TextColumn::make('slug')->toggleable()->toggledHiddenByDefault(),
-                Tables\Columns\TextColumn::make('type.name')->formatStateUsing(fn($state) => Str::headline($state)),
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('banners')->collection(MediaCollectionEnum::ArticleBanners())->label('Banner'),
-                Tables\Columns\TextColumn::make('created_at')->toggleable()->toggledHiddenByDefault(),
-                Tables\Columns\TextColumn::make('updated_at')->toggleable()->toggledHiddenByDefault(),
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('slug')
+                    ->toggleable()
+                    ->toggledHiddenByDefault(),
+                Tables\Columns\TextColumn::make('type.name')
+                    ->formatStateUsing(fn($state) => Str::headline($state)),
+                Tables\Columns\SpatieMediaLibraryImageColumn::make('banners')
+                    ->collection(
+                        MediaCollectionEnum::ArticleBanners()
+                    )
+                    ->label('Banner'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->toggleable()
+                    ->since()
+                    ->tooltip(fn($record) => $record->created_at)
+                    ->sortable()
+                    ->toggledHiddenByDefault(),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->since()
+                    ->tooltip(fn($record) => $record->updated_at)
+                    ->toggleable()
+                    ->sortable()
+                    ->toggledHiddenByDefault(),
                 Tables\Columns\TextColumn::make('published_at')
                     ->tooltip(fn($record) => $record->published_at)
-                    ->formatStateUsing(fn($state) => $state->diffForHumans())
-                    ->default('Draft')
+                    ->since()
+                    ->placeholder('Draft')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\ToggleColumn::make('Published')
@@ -149,7 +167,17 @@ class ArticleResource extends Resource
                 Tables\Filters\SelectFilter::make('type')
                     ->relationship('type', 'name')
                     ->multiple()
-                    ->options((fn() => collect(ArticleTypeEnum::all())->mapWithKeys(fn(ArticleTypeEnum $articleType) => [$articleType->getId() => Str::headline($articleType())])->toArray()))
+                    ->options(
+                        (fn() => collect(ArticleTypeEnum::all())
+                            ->mapWithKeys(
+                                fn(ArticleTypeEnum $articleType) => [
+                                    $articleType->getId() => Str::headline(
+                                        $articleType()
+                                    )
+                                ]
+                            )
+                            ->toArray())
+                    )
                     ->placeholder('All')
                     ->label('Type'),
             ])
