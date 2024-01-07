@@ -15,16 +15,23 @@ class CourseController extends Controller
     {
         $perPage = $request->get('per_page', 10);
 
-        $courses = QueryBuilder::for(Course::class)
+        $courses = QueryBuilder::for(
+            Course::query()
+                ->published()
+                ->with(WithEnum::banner())
+        )
             ->allowedFields('body')
-            ->with([WithEnum::banner()])
             ->allowedSorts('published_at', 'title')
             ->defaultSort('-published_at')
             ->addSelect('id', 'title', 'slug', 'published_at', 'created_at', 'updated_at')
-            ->when($request->has('paginate'),
-                fn(Builder $query) => $query->when($request->has('cursor'),
-                    fn(Builder $query) => $query->cursorPaginate($perPage)->withQueryString(),
-                    fn(Builder $query) => $query->paginate($perPage)->withQueryString()
+            ->when(
+                $request->has('paginate'),
+                fn(Builder $query) => $query->when(
+                    $request->has('cursor'),
+                    fn(Builder $query) => $query->cursorPaginate($perPage)
+                        ->withQueryString(),
+                    fn(Builder $query) => $query->paginate($perPage)
+                        ->withQueryString()
                 ),
                 fn(Builder $query) => $query->get(),
             );
