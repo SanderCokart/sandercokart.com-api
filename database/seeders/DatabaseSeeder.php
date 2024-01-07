@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
 
             // 3 types * 10
             Article::factory()->count(15)->roundRobinArticleTypes()->draft()->create();
-            $published = Article::factory()->count(15)->roundRobinArticleTypes()->published()->create();
+            $published = Article::factory()->count(150)->roundRobinArticleTypes()->published()->create();
 
             $publishedCourseArticles = $published->where('article_type_id', ArticleTypeEnum::courses->getId());
 
