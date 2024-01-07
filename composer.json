@@ -2,23 +2,20 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": [
-        "framework",
-        "laravel"
-    ],
+    "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
         "archtechx/enums": "^0.3.2",
         "cviebrock/eloquent-sluggable": "^10.0",
-        "filament/filament": "^2.0",
-        "filament/spatie-laravel-media-library-plugin": "^2.0",
+        "filament/filament": "^3.1",
+        "filament/spatie-laravel-media-library-plugin": "^3.1",
         "guzzlehttp/guzzle": "^7",
         "laravel/framework": "^v10",
         "laravel/sanctum": "^3",
         "laravel/scout": "^10.0",
         "laravel/tinker": "^2",
-        "livewire/livewire": "^2.0",
+        "livewire/livewire": "^3.0",
         "spatie/eloquent-sortable": "^4.0",
         "spatie/laravel-query-builder": "^5.2"
     },
@@ -52,7 +49,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force",

@@ -199,6 +199,7 @@ return [
         /*
          * Package Service Providers...
          */
+        App\Providers\Filament\AdminPanelProvider::class,
 
         /*
          * Application Service Providers...

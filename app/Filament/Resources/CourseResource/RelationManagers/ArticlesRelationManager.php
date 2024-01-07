@@ -7,9 +7,9 @@ use App\Enums\DiskEnum;
 use App\Enums\MediaCollectionEnum;
 use App\Models\Article;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Str;
 
@@ -19,7 +19,7 @@ class ArticlesRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -100,7 +100,7 @@ class ArticlesRelationManager extends RelationManager
         return 'order_column';
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([
