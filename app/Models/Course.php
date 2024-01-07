@@ -16,6 +16,12 @@ class Course extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia, SoftDeletes, Sluggable;
 
+    protected $casts = [
+        'published_at' => 'datetime',
+        'created_at'   => 'datetime',
+        'updated_at'   => 'datetime',
+    ];
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection(MediaCollectionEnum::CourseBanners());
