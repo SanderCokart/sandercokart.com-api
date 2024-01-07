@@ -9,8 +9,8 @@ use App\Models\Article;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 use Str;
 
 class ArticlesRelationManager extends RelationManager
@@ -109,13 +109,18 @@ class ArticlesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('course_id'),
                 Tables\Columns\TextColumn::make('order_column'),
                 Tables\Columns\TextColumn::make('title'),
+                Tables\Columns\TextColumn::make('published_at')
+                    ->tooltip(fn($record) => $record->published_at)
+                    ->sortable()
+                    ->placeholder('Draft'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-                Tables\Actions\AttachAction::make()->preloadRecordSelect(),
+                Tables\Actions\AttachAction::make()
+                    ->preloadRecordSelect(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

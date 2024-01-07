@@ -10,8 +10,9 @@ use App\Models\Article;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Table;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Str;
@@ -148,10 +149,12 @@ class ArticleResource extends Resource
                 Tables\Columns\ToggleColumn::make('Published')
                     ->getStateUsing(fn(Article $record) => isset($record->published_at))
                     ->updateStateUsing(function ($state, Article $record) {
-                        $record->setAttribute('published_at', $state ? now() : null);
-                        $record->save();
+                        $state
+                            ? $record->publish()
+                            : $record->unpublish();
                     }),
             ])
+            ->filtersFormWidth(MaxWidth::Large)
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
                 //filter drafts and published
@@ -167,6 +170,7 @@ class ArticleResource extends Resource
                 Tables\Filters\SelectFilter::make('type')
                     ->relationship('type', 'name')
                     ->multiple()
+                    ->preload()
                     ->options(
                         (fn() => collect(ArticleTypeEnum::all())
                             ->mapWithKeys(
@@ -180,6 +184,35 @@ class ArticleResource extends Resource
                     )
                     ->placeholder('All')
                     ->label('Type'),
+                Tables\Filters\Filter::make('published_at')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\DatePicker::make('published_from')
+                                    ->displayFormat('D d F / d-m-Y')
+                                    ->native(false)
+                                    ->minDate(Article::min('published_at'))
+                                    ->maxDate(Article::max('published_at'))
+                                    ->required(),
+                                Forms\Components\DatePicker::make('published_until')
+                                    ->displayFormat('D d F / d-m-Y')
+                                    ->minDate(Article::min('published_at'))
+                                    ->maxDate(Article::max('published_at'))
+                                    ->native(false)
+                                    ->required(),
+                            ])
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['published_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['published_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '<=', $date),
+                            );
+                    }),
             ])
             ->defaultSort('published_at', 'desc')
             ->actions([
@@ -197,9 +230,9 @@ class ArticleResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListArticles::route('/'),
+            'index'  => Pages\ListArticles::route('/'),
             'create' => Pages\CreateArticle::route('/create'),
-            'edit' => Pages\EditArticle::route('/{record}/edit'),
+            'edit'   => Pages\EditArticle::route('/{record}/edit'),
         ];
     }
 

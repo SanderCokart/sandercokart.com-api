@@ -93,6 +93,16 @@ class Article extends Model implements HasMedia
     {
         Storage::disk(DiskEnum::public())->delete($this->extractFilesFromMarkdownBody());
     }
+
+    public function publish(): void
+    {
+        $this->update(['published_at' => now()]);
+    }
+
+    public function unpublish(): void
+    {
+        $this->update(['published_at' => null]);
+    }
     //</editor-fold>
 
     //<editor-fold desc="scopes">
