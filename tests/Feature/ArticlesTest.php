@@ -30,7 +30,7 @@ test('generates paths for static page generation', function () {
     ]);
 });
 
-it('can index articles', function () {
+test('when indexing, show all types but sorted', function () {
     Article::factory(3)->roundRobinArticleTypes()->create();
 
 
@@ -86,7 +86,8 @@ it('can paginate', function () {
 
     $response->assertStatus(200);
 
-});
+})->group('pagination');
+
 
 it('can cursor paginate', function () {
     Article::factory(10)->roundRobinArticleTypes()->create();
@@ -109,31 +110,19 @@ it('can cursor paginate', function () {
             'prev_cursor'
         ]
     ]);
-});
+})->group('pagination');
 
 it('can toggle on the inclusion of the article body', function () {
     $article = Article::factory()->type(ArticleTypeEnum::general)->create();
 
     $response = getJson(route('api.articles.index', parameters: [
-        'per_page' => 2,
-        'paginate' => 1,
-        'cursor' => 1,
         'fields' => 'body'
     ]));
 
     $response->assertStatus(200);
     $response->assertJsonStructure([
-        'links' => [
-            'next',
-            'prev'
-        ],
-        'meta' => [
-            'per_page',
-            'next_cursor',
-            'prev_cursor'
-        ],
         'articles' => [
-            '*' => [
+            'general' => [
                 '*' => [
                     'body'
                 ]
@@ -145,8 +134,8 @@ it('can toggle on the inclusion of the article body', function () {
     ]);
 });
 
-it('can sort by title and published_at', function () {
-    Article::factory(10)->roundRobinArticleTypes()->create();
+it('can sort by title', function () {
+    Article::factory(3)->type(ArticleTypeEnum::general)->create();
 
     $articleWithZTitle = Article::factory()->type(ArticleTypeEnum::general)->create([
         'title' => 'Z'
@@ -158,23 +147,20 @@ it('can sort by title and published_at', function () {
 
     $response->assertStatus(200);
 
-    // make sure the first article is the one with the Z title
     $response->assertJsonPath('articles.general.0.title', $articleWithZTitle->title);
+})->group('sorting');
 
-
-    $dateInTheFuture = now()->addDays(10);
-
-    $articleWithZTitle->update([
-        //set published_at to a specific date, so we can test sorting by it
-        'published_at' => $dateInTheFuture
-    ]);
+it('can sort by published at', function () {
+    Article::factory(3)->type(ArticleTypeEnum::general)->create();
+    //check if we can sort by published_at
+    $oldestArticle = Article::oldest('published_at')->first();
 
     $response = getJson(route('api.articles.index', parameters: [
-        'sort' => '-published_at',
+        'sort' => 'published_at',
     ]));
 
     $response->assertStatus(200);
-
-    // make sure the first article is the one with the latest published_at date
-    $response->assertJsonPath('articles.general.0.published_at', $dateInTheFuture->format(ArticleJsonResource::$dateFormat));
-});
+    $response
+        ->assertJsonPath('articles.general.0.title', $oldestArticle->title)
+        ->assertJsonPath('articles.general.0.published_at', $oldestArticle->published_at->toISOString());
+})->group('sorting');
