@@ -10,8 +10,8 @@ use App\Models\Course;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 
 class CourseResource extends Resource
 {
@@ -65,7 +65,14 @@ class CourseResource extends Resource
                     ->placeholder('Draft')
                     ->searchable()
                     ->sortable()
-                    ->tooltip(fn($record) => $record->published_at)
+                    ->tooltip(fn($record) => $record->published_at),
+                Tables\Columns\ToggleColumn::make('Published')
+                    ->getStateUsing(fn(Course $record) => isset($record->published_at))
+                    ->updateStateUsing(function ($state, Course $record) {
+                        $state
+                            ? $record->publish()
+                            : $record->unpublish();
+                    }),
 
             ])
             ->defaultSort('published_at', 'desc')

@@ -27,10 +27,23 @@ class Course extends Model implements HasMedia
         $this->addMediaCollection(MediaCollectionEnum::CourseBanners());
     }
 
+    protected static function booted()
+    {
+        parent::booted();
+        static::updated(function (Course $course) {
+            match ($course->published_at) {
+                null => $course->articles->each->unpublish(),
+                default => $course->articles->each->publish(),
+            };
+        });
+    }
+
     //<editor-fold desc="relationships">
     public function banner(): MorphOne
     {
-        return $this->media()->where('collection_name', MediaCollectionEnum::CourseBanners())->one();
+        return $this->media()
+            ->where('collection_name', MediaCollectionEnum::CourseBanners())
+            ->one();
     }
 
     public function articles(): BelongsToMany
@@ -53,6 +66,20 @@ class Course extends Model implements HasMedia
     }
 
     //</editor-fold>
+
+
+    //<editor-fold desc="manipulations">
+    public function publish(): void
+    {
+        $this->update(['published_at' => now()]);
+    }
+
+    public function unpublish(): void
+    {
+        $this->update(['published_at' => null]);
+    }
+    //</editor-fold>
+
     public function sluggable(): array
     {
         return [
