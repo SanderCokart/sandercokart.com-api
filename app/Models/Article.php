@@ -4,8 +4,8 @@ namespace App\Models;
 
 use App\Enums\DiskEnum;
 use App\Enums\MediaCollectionEnum;
+use App\Traits\UsefulScopes;
 use Cviebrock\EloquentSluggable\Sluggable;
-use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +20,7 @@ use Storage;
 
 class Article extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia, Searchable, Sluggable;
+    use HasFactory, SoftDeletes, InteractsWithMedia, Searchable, Sluggable, UsefulScopes;
 
     protected $casts = [
         'published_at' => 'datetime',
@@ -62,7 +62,9 @@ class Article extends Model implements HasMedia
 
     public function banner(): MorphOne
     {
-        return $this->media()->where('collection_name', MediaCollectionEnum::ArticleBanners())->one();
+        return $this->media()
+            ->where('collection_name', MediaCollectionEnum::ArticleBanners())
+            ->one();
     }
 
     public function courses(): BelongsToMany
@@ -76,7 +78,7 @@ class Article extends Model implements HasMedia
     //<editor-fold desc="markdown manipulations">
     public function extractFilesFromMarkdownBody(): array
     {
-        $regex = '/\((https?:\/\/)?' . preg_quote(config('app.url'), '/') . '\/storage\/markdown-attachments\/.*\)/';
+        $regex = '/\((https?:\/\/)?'.preg_quote(config('app.url'), '/').'\/storage\/markdown-attachments\/.*\)/';
 
         preg_match($regex, $this->body, $matches);
 
@@ -91,7 +93,8 @@ class Article extends Model implements HasMedia
 
     public function deleteAllMarkdownAttachments(): void
     {
-        Storage::disk(DiskEnum::public())->delete($this->extractFilesFromMarkdownBody());
+        Storage::disk(DiskEnum::public())
+            ->delete($this->extractFilesFromMarkdownBody());
     }
 
     public function publish(): void
@@ -115,13 +118,14 @@ class Article extends Model implements HasMedia
     {
         return $query->whereNull('published_at');
     }
+
     //</editor-fold>
 
     public function sluggable(): array
     {
         return [
             'slug' => [
-                'source' => 'title',
+                'source'   => 'title',
                 'onUpdate' => true,
             ],
         ];
