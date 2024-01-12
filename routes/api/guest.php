@@ -16,3 +16,4 @@ Route::get('/articles/{type:name}/{article:slug}', [ArticleController::class, 's
 
 
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
