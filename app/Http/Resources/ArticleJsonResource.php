@@ -24,9 +24,19 @@ class ArticleJsonResource extends JsonResource
             'title'        => $this->title,
             'slug'         => $this->slug,
             'excerpt'      => $this->excerpt,
-            'banner'       => $this->whenLoaded('banner', fn() => $this->banner),
-            'type'         => $this->whenLoaded('type', fn() => $this->type),
-            'body'         => $this->when($this->body, $this->body),
+
+            $this->mergeWhen($this->relationLoaded('banner'), [
+                'banner' => $this->banner
+            ]),
+
+            $this->mergeWhen($this->relationLoaded('type'), [
+                'type' => $this->type
+            ]),
+
+            $this->mergeWhen($this->body,[
+                'body' => $this->body
+            ]),
+
             'created_at'   => $this->created_at,
             'updated_at'   => $this->updated_at,
             'published_at' => $this->published_at,

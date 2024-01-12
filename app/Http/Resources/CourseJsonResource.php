@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class CourseJsonResource extends JsonResource
 {
 
-    public static $wrap = 'article';
+    public static $wrap = 'course';
 
     /**
      * Transform the resource into an array.
@@ -27,6 +27,11 @@ class CourseJsonResource extends JsonResource
             'created_at'   => $this->created_at,
             'updated_at'   => $this->updated_at,
             'published_at' => $this->published_at,
+
+            $this->mergeWhen($this->relationLoaded('articles'), [
+                'articles' => ArticleJsonResource::collection($this->articles),
+                'articles_count' => $this->whenCounted('articles', fn() => $this->articles_count),
+            ]),
         ];
     }
 }
