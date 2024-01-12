@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\WithEnum;
 use App\Http\Resources\CourseJsonCollection;
+use App\Http\Resources\CourseJsonResource;
 use App\Models\Course;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -37,5 +38,23 @@ class CourseController extends Controller
             );
 
         return new CourseJsonCollection($courses);
+    }
+
+    public function show(string $slug): CourseJsonResource
+    {
+        return new CourseJsonResource(
+            Course::with([
+                WithEnum::banner(),
+                'articles' => function ($query) {
+                    $query
+                        ->selectAllBut(['body'])
+                        ->with('type', WithEnum::banner())
+                        ->published();
+                }
+            ])
+                ->withCount('articles')
+                ->where('slug', $slug)
+                ->firstOrFail()
+        );
     }
 }
