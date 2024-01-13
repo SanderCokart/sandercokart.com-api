@@ -35,18 +35,10 @@ class ArticleResource extends Resource
                             ->required()
                             ->reactive()
                             ->placeholder('Enter a title...')
-                            ->afterStateUpdated(function ($set, $state) {
-                                $set('slug', Str::slug($state));
-                            })
                             ->rules('required|max:255'),
-                        Forms\Components\TextInput::make('slug')
-                            ->required()
-                            ->placeholder('Enter a slug...')
-                            ->unique(ignoreRecord: true)
-                            ->rules('required|max:255'),
-                        Forms\Components\Select::make('type')
+                        Forms\Components\Select::make('article_type_id')
                             ->relationship('type', 'name')
-                            ->options(ArticleTypeEnum::getAssocArray(fn($option) => Str::headline($option)))
+                            ->options(ArticleTypeEnum::getAssocArray(fn($value) => Str::title($value)))
                             ->required(),
                         Forms\Components\Select::make('courses')
                             ->relationship('courses', 'title')
@@ -59,6 +51,14 @@ class ArticleResource extends Resource
                                     ->reactive()
                                     ->placeholder('Learn Laravel | React | Vue | Tailwind')
                                     ->rules('required|max:255'),
+                                Forms\Components\SpatieMediaLibraryFileUpload::make('banner')
+                                    ->required()
+                                    ->image()
+                                    ->collection(MediaCollectionEnum::CourseBanners())
+                                    ->imageCropAspectRatio('3:2')
+                                    ->placeholder('Upload a banner...')
+                                    ->columnSpan(2)
+                                    ->disk(DiskEnum::public()),
                             ])
                             ->searchable()
                             ->nullable(),
@@ -206,17 +206,18 @@ class ArticleResource extends Resource
                         return $query
                             ->when(
                                 $data['published_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '>=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('published_at', '>=', $date),
                             )
                             ->when(
                                 $data['published_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '<=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('published_at', '<=', $date),
                             );
                     }),
             ])
             ->defaultSort('published_at', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
                 Tables\Actions\RestoreAction::make(),
             ])

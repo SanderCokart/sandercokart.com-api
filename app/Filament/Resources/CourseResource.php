@@ -75,9 +75,15 @@ class CourseResource extends Resource
                     }),
 
             ])
+            ->filters([
+                Tables\Filters\TrashedFilter::make()
+            ])
             ->defaultSort('published_at', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

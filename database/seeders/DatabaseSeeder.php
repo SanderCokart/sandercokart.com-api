@@ -21,14 +21,13 @@ class DatabaseSeeder extends Seeder
             ArticleTypeSeeder::class,
         ]);
 
+        User::factory()->create([
+            'name'     => 'Test User',
+            'email'    => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
         if (app()->isLocal()) {
-            User::factory()->create([
-                'name'     => 'Test User',
-                'email'    => 'test@example.com',
-                'password' => bcrypt('password'),
-            ]);
-
-
             $courses = Course::factory()->createMany([
                 [
                     'title' => 'Laravel 6 From Scratch',
