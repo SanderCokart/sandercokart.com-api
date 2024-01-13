@@ -2,7 +2,7 @@
 
 use function Pest\Laravel\postJson;
 
-it('Contact form works',
+test('Contact form works',
     /**
      * @param $data array{
      *      submittedData: array{

@@ -1,6 +1,12 @@
 <?php
 
+use Database\Seeders\ArticleTypeSeeder;
+
+use function Pest\Laravel\seed;
+
 uses(
     Tests\TestCase::class,
     Illuminate\Foundation\Testing\RefreshDatabase::class,
-)->in('Feature', 'Unit');
+)->beforeEach(function() {
+    seed(ArticleTypeSeeder::class);
+})->in('Feature', 'Unit');

@@ -10,10 +10,6 @@ use function Pest\Laravel\seed;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
-    seed(ArticleTypeSeeder::class);
-});
-
 test('generates paths for static page generation', function () {
     Article::factory()->roundRobinArticleTypes()->create();
 
