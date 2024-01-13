@@ -20,4 +20,9 @@ class EditArticle extends EditRecord
             RestoreAction::make(),
         ];
     }
+
+    protected function getRedirectUrl(): ?string
+    {
+        return  $this->previousUrl ?? self::getResource()::getUrl('index');
+    }
 }

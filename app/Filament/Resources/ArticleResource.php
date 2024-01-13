@@ -41,6 +41,11 @@ class ArticleResource extends Resource
                             ->options(ArticleTypeEnum::getAssocArray(fn($value) => Str::title($value)))
                             ->required(),
                         Forms\Components\Select::make('courses')
+                            ->required()
+                            ->requiredIf('article_type_id', ArticleTypeEnum::courses->getId())
+                            ->validationMessages([
+                                'required_if' => "This field is required when the article type is Courses.",
+                            ])
                             ->relationship('courses', 'title')
                             ->preload()
                             ->multiple()
@@ -128,6 +133,10 @@ class ArticleResource extends Resource
                         MediaCollectionEnum::ArticleBanners()
                     )
                     ->label('Banner'),
+                Tables\Columns\TextColumn::make('courses.title')
+                    ->label('Course')
+                    ->toggleable(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->toggleable()
                     ->since()
