@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="serve" type="PhpLocalRunConfigurationType" factoryName="PHP Console" path="$PROJECT_DIR$/artisan" scriptParameters="serve">
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="false" run_configuration_name="prepare" run_configuration_type="ShConfigurationType" />
+      <option name="LaunchBrowser.Before.Run" url="http://localhost:8000/admin" />
+    </method>
+  </configuration>
+</component>
