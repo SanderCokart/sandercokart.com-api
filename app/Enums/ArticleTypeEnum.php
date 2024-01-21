@@ -43,6 +43,15 @@ enum ArticleTypeEnum: string
         return $callback ? $callback($string) : $string;
     }
 
+    public static function fromId(int $id): self
+    {
+        return match ($id) {
+            1 => self::general,
+            2 => self::courses,
+            3 => self::tips,
+        };
+    }
+
     public function getId(): int
     {
         return match ($this) {
