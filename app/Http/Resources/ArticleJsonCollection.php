@@ -24,11 +24,6 @@ class ArticleJsonCollection extends ResourceCollection
             ->when(
                 !$request->route('type'),
                 fn($query) => $query->groupBy('type.name')
-            )
-            // limit the number of articles per type if requested
-            ->when(
-                $request->has('take'),
-                fn($query) => $query->map(fn($group) => $group->take($request->get('take')))
             );
     }
 }
