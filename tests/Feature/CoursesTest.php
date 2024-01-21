@@ -21,32 +21,36 @@ test('can list all courses', function () {
     ]);
 });
 
-test('can show a course with all of its articles', function () {
-    Course::factory()
+test('can show a course with all of its articles minus its body', function () {
+    $course = Course::factory()
         ->hasArticles(3)
         ->create();
 
-    $response = getJson(route('api.courses.show', 1));
+    $response = getJson(route('api.courses.show', $course->slug));
 
     $response->assertStatus(200);
+
     $response->assertJsonStructure([
         'course' => [
             'id',
-            'name',
-            'description',
+            'title',
             'created_at',
             'updated_at',
             'articles' => [
                 '*' => [
                     'id',
                     'title',
-                    'description',
+                    'type',
+                    'banner',
+                    'excerpt',
                     'created_at',
                     'updated_at',
                 ],
             ],
         ],
     ]);
+
+    $response->assertJsonMissingPath('course.articles.0.body');
 });
 
 test('can paginate courses', function () {
