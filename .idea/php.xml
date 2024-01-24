@@ -184,6 +184,8 @@
       <path value="$PROJECT_DIR$/vendor/filament/infolists" />
       <path value="$PROJECT_DIR$/vendor/filament/actions" />
       <path value="$PROJECT_DIR$/vendor/filament/widgets" />
+      <path value="$PROJECT_DIR$/vendor/openspout/openspout" />
+      <path value="$PROJECT_DIR$/vendor/anourvalar/eloquent-serialize" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">
