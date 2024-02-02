@@ -11,7 +11,7 @@ fi
 if [ ! -f .env ]; then
     echo ".env file not found!"
     echo "Copying .env.example to .env"
-    cp .env.example .env
+    cp .env.local.example .env
 
     # run artisan key:generate and storage:link
     php artisan key:generate
