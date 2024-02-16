@@ -74,11 +74,12 @@ class ArticleController extends Controller
         return new ArticleJsonResource(
             Article::with([WithEnum::banner(), 'type'])
                 ->where('slug', $slug)
+                ->whereArticleTypeId(ArticleTypeEnum::from($type)->getId())
                 ->firstOrFail()
         );
     }
 
-    public function paths(Request $request): array
+    public function paths(): array
     {
         return Article::with('type')
             ->get()

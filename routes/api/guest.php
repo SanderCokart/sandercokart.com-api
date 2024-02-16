@@ -12,7 +12,8 @@ Route::get('/articles/paths', [ArticleController::class, 'paths'])->name('articl
 Route::get('/articles/{type:name}', [ArticleController::class, 'index'])
     ->name('articles.index')
     ->whereIn('type', ArticleTypeEnum::names());
-Route::get('/articles/{type:name}/{article:slug}', [ArticleController::class, 'show'])->name('articles.show');
+Route::get('/articles/{type:name}/{article:slug}', [ArticleController::class, 'show'])->name('articles.show')
+    ->whereIn('type', ArticleTypeEnum::names());
 
 
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
