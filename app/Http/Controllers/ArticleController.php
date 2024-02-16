@@ -14,18 +14,19 @@ use Spatie\QueryBuilder\QueryBuilder;
 class ArticleController extends Controller
 {
     private const DEFAULT_PER_PAGE = 10;
-    private const DEFAULT_TAKE = 10;
+
+    //private const DEFAULT_TAKE = 10;
 
     public function index(Request $request, ?ArticleTypeEnum $type = null): ArticleJsonCollection
     {
         $perPage = $request->get('per_page', self::DEFAULT_PER_PAGE);
-        $take = $request->get('take', self::DEFAULT_TAKE);
+        //$take = $request->get('take', self::DEFAULT_TAKE);
 
-        $unionQuery = $this->createArticleUnionSubQuery($take);
+        //$unionQuery = $this->createArticleUnionSubQuery($take);
 
         $articles = QueryBuilder::for(
             Article::query()
-                ->fromSub($unionQuery, 'articles')
+                //->fromSub($unionQuery, 'articles')
                 ->published()
                 ->with([WithEnum::banner(), 'type'])
         )
@@ -49,24 +50,24 @@ class ArticleController extends Controller
         return new ArticleJsonCollection($articles);
     }
 
-    private function createArticleUnionSubQuery(int $take): Builder
-    {
-        $unionQuery = null;
-
-        foreach (ArticleTypeEnum::all() as $articleType) {
-            $query = Article::query()
-                ->published()
-                ->where('article_type_id', $articleType->getId())
-                ->orderBy('published_at', 'desc')
-                ->limit($take);
-
-            $unionQuery = $unionQuery
-                ? $unionQuery->union($query)
-                : $query;
-        }
-
-        return $unionQuery;
-    }
+//    private function createArticleUnionSubQuery(int $take): Builder
+//    {
+//        $unionQuery = null;
+//
+//        foreach (ArticleTypeEnum::all() as $articleType) {
+//            $query = Article::query()
+//                ->published()
+//                ->where('article_type_id', $articleType->getId())
+//                ->orderBy('published_at', 'desc')
+//                ->limit($take);
+//
+//            $unionQuery = $unionQuery
+//                ? $unionQuery->union($query)
+//                : $query;
+//        }
+//
+//        return $unionQuery;
+//    }
 
     public function show(string $type, string $slug): ArticleJsonResource
     {
@@ -77,7 +78,7 @@ class ArticleController extends Controller
         );
     }
 
-    public function paths(): array
+    public function paths(Request $request): array
     {
         return Article::with('type')
             ->get()
