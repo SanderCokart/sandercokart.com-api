@@ -21,9 +21,9 @@ class ArticleJsonCollection extends ResourceCollection
     {
         return $this->collection
             // Group by type name if no type is specified
-            ->when(
+           /* ->when(
                 !$request->route('type'),
                 fn($query) => $query->groupBy('type.name')
-            );
+            )*/;
     }
 }
