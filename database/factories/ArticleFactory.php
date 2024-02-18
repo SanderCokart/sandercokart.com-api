@@ -23,7 +23,7 @@ class ArticleFactory extends Factory
     {
         return [
             'title' => $this->faker->realText(50),
-            'excerpt' => $this->faker->realText(120),
+            'description' => $this->faker->realText(120),
             'slug' => $this->faker->slug,
             'body' => $this->faker->realText(1000),
             'article_type_id' => ArticleTypeEnum::random()->getId(),

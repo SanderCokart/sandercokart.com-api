@@ -42,7 +42,7 @@ test('can show a course with all of its articles minus its body', function () {
                     'title',
                     'type',
                     'banner',
-                    'excerpt',
+                    'description',
                     'created_at',
                     'updated_at',
                 ],

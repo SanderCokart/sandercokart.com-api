@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class ArticleJsonResource extends JsonResource
 {
 
-    public static $wrap = 'article';
+    public static $wrap = false;
 
     /**
      * Transform the resource into an array.
@@ -20,26 +20,21 @@ class ArticleJsonResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'           => $this->id,
-            'title'        => $this->title,
-            'slug'         => $this->slug,
-            'excerpt'      => $this->excerpt,
+            'id'      => $this->id,
+            'title'   => $this->title,
+            'slug'    => $this->slug,
+            'description' => $this->description,
 
-            $this->mergeWhen($this->relationLoaded('banner'), [
-                'banner' => $this->banner
-            ]),
+            'banner' => $this->whenLoaded('banner', fn() => $this->banner),
+            'type'   => $this->whenLoaded('type', fn() => $this->type),
 
-            $this->mergeWhen($this->relationLoaded('type'), [
-                'type' => $this->type
-            ]),
-
-            $this->mergeWhen($this->body,[
-                'body' => $this->body
-            ]),
+            'body' => $this->when($this->body, $this->body),
 
             'created_at'   => $this->created_at,
             'updated_at'   => $this->updated_at,
             'published_at' => $this->published_at,
+
+            'order' => $this->whenPivotLoaded('article_course', fn() => $this->pivot->order_column)
         ];
     }
 }

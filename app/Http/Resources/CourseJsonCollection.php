@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 class CourseJsonCollection extends ResourceCollection
 {
-    public static $wrap = 'courses';
+    public static $wrap = false;
 
     /**
      * Transform the resource collection into an array.
@@ -19,6 +19,9 @@ class CourseJsonCollection extends ResourceCollection
      */
     public function toArray(Request $request): Collection
     {
+        if ($request->has('paginate')) {
+            static::$wrap = 'courses';
+        }
 
         return $this->collection;
     }

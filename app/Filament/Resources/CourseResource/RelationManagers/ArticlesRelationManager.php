@@ -78,8 +78,8 @@ class ArticlesRelationManager extends RelationManager
                     })
                     ->reactive(),
 
-                Forms\Components\Textarea::make('excerpt')
-                    ->placeholder('Enter an excerpt...')
+                Forms\Components\Textarea::make('description')
+                    ->placeholder('Enter an description...')
                     ->required()
                     ->columnSpan(2)
                     ->autosize()
@@ -104,7 +104,6 @@ class ArticlesRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('article_id'),
                 Tables\Columns\TextColumn::make('course_id'),
                 Tables\Columns\TextColumn::make('order_column'),

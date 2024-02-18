@@ -7,6 +7,7 @@ use App\Enums\WithEnum;
 use App\Http\Resources\ArticleJsonCollection;
 use App\Http\Resources\ArticleJsonResource;
 use App\Models\Article;
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -19,31 +20,15 @@ class ArticleController extends Controller
 
     public function index(Request $request, ?ArticleTypeEnum $type = null): ArticleJsonCollection
     {
-        $perPage = $request->get('per_page', self::DEFAULT_PER_PAGE);
-        //$take = $request->get('take', self::DEFAULT_TAKE);
-
-        //$unionQuery = $this->createArticleUnionSubQuery($take);
-
-        $articles = QueryBuilder::for(
-            Article::query()
-                //->fromSub($unionQuery, 'articles')
-                ->published()
-                ->with([WithEnum::banner(), 'type'])
-        )
+        $articles = QueryBuilder::for($this->getArticlesQuery())
             ->allowedSorts('published_at', 'title')
             ->defaultSort('-published_at')
             ->allowedFields('body')
-            ->addSelect('id', 'title', 'excerpt', 'slug', 'published_at', 'article_type_id')
+            ->addSelect('id', 'title', 'description', 'slug', 'published_at', 'article_type_id')
             ->when($type, fn(Builder $query) => $query->where('article_type_id', $type?->getId()))
             ->when(
                 $request->has('paginate'),
-                fn(Builder $query) => $query->when(
-                    $request->has('cursor'),
-                    fn(Builder $query) => $query->cursorPaginate($perPage)
-                        ->withQueryString(),
-                    fn(Builder $query) => $query->paginate($perPage)
-                        ->withQueryString()
-                ),
+                $this->handlePagination($request),
                 fn(Builder $query) => $query->get()
             );
 
@@ -74,7 +59,10 @@ class ArticleController extends Controller
         return new ArticleJsonResource(
             Article::with([WithEnum::banner(), 'type'])
                 ->where('slug', $slug)
-                ->whereArticleTypeId(ArticleTypeEnum::from($type)->getId())
+                ->whereArticleTypeId(
+                    ArticleTypeEnum::from($type)
+                        ->getId()
+                )
                 ->firstOrFail()
         );
     }
@@ -91,5 +79,30 @@ class ArticleController extends Controller
             ]
             )
             ->toArray();
+    }
+
+    public function getArticlesQuery(): Builder
+    {
+        //$take = $request->get('take', self::DEFAULT_TAKE);
+
+        //$unionQuery = $this->createArticleUnionSubQuery($take);
+
+        return Article::query()
+            //->fromSub($unionQuery, 'articles')
+            ->published()
+            ->with([WithEnum::banner(), 'type']);
+    }
+
+    public function handlePagination(Request $request): Closure
+    {
+        $perPage = $request->get('per_page', self::DEFAULT_PER_PAGE);
+
+        return fn(Builder $query) => $query->when(
+            $request->has('cursor'),
+            fn(Builder $query) => $query->cursorPaginate($perPage)
+                ->withQueryString(),
+            fn(Builder $query) => $query->paginate($perPage)
+                ->withQueryString()
+        );
     }
 }

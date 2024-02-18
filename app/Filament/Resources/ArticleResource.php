@@ -100,8 +100,8 @@ class ArticleResource extends Resource
                     })
                     ->reactive(),
 
-                Forms\Components\Textarea::make('excerpt')
-                    ->placeholder('Enter an excerpt...')
+                Forms\Components\Textarea::make('description')
+                    ->placeholder('Enter an description...')
                     ->required()
                     ->columnSpan(2)
                     ->autosize()

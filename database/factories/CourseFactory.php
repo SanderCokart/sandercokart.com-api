@@ -16,6 +16,7 @@ class CourseFactory extends Factory
     {
         return [
             'title' => $this->faker->word(),
+            'description' => $this->faker->text(255),
             'created_at' => $created_at = now()->subDays(random_int(1, 30)),
             'updated_at' => $updated_at = $this->faker->dateTimeBetween($created_at, 'now'),
             'published_at' => $this->faker->dateTimeBetween($updated_at, 'now'),
